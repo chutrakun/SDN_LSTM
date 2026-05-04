@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDN Security Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #21262d;
+    --border:   #30363d;
+    --text:     #e6edf3;
+    --muted:    #7d8590;
+    --green:    #3fb950;
+    --red:      #f85149;
+    --amber:    #d29922;
+    --blue:     #58a6ff;
+    --purple:   #bc8cff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+  /* Header */
+  .header {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; gap: 16px;
+  }
+  .header h1 { font-size: 16px; font-weight: 600; letter-spacing: .3px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .header-right { margin-left: auto; color: var(--muted); font-size: 12px; }
+
+  /* Layout */
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 20px 24px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .8px; color: var(--muted); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Stat cards */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 0 24px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .stat-value { font-size: 28px; font-weight: 700; margin-top: 6px; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Chart area */
+  .chart-wrap { position: relative; height: 180px; }
+
+  /* Blocked IPs */
+  .ip-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+  .ip-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg3); border-radius: 6px; padding: 8px 12px;
+    border-left: 3px solid var(--red);
+  }
+  .ip-addr { font-family: monospace; font-size: 13px; color: var(--red); flex: 1; }
+  .ip-meta { font-size: 11px; color: var(--muted); }
+  .badge {
+    font-size: 10px; font-weight: 600; padding: 2px 7px;
+    border-radius: 20px; letter-spacing: .4px;
+  }
+  .badge-red    { background: #2d1b1b; color: var(--red); }
+  .badge-green  { background: #1b2d1b; color: var(--green); }
+  .badge-amber  { background: #2d2210; color: var(--amber); }
+  .badge-blue   { background: #101d2d; color: var(--blue); }
+
+  /* Attack log */
+  .log-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+  .log-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: 6px; background: var(--bg3);
+    font-size: 12px;
+  }
+  .log-time { color: var(--muted); min-width: 54px; font-family: monospace; }
+  .log-msg { flex: 1; }
+  .log-conf { font-family: monospace; font-weight: 600; }
+
+  /* Topology */
+  .topo-wrap { display: flex; align-items: center; justify-content: center; padding: 10px 0; }
+  #topo-svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  /* ML Meters */
+  .meter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .meter-item { }
+  .meter-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+  .meter-bar-bg { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .meter-bar { height: 100%; border-radius: 3px; transition: width .6s ease, background .4s; }
+  .meter-val { font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+  /* Col span */
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .empty { color: var(--muted); font-size: 12px; text-align: center; padding: 20px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="status-dot" id="conn-dot"></div>
+  <h1>SDN Intelligent Security Dashboard</h1>
+  <span class="badge badge-blue">Ryu 4.34</span>
+  <span class="badge badge-blue">LSTM Model</span>
+  <div class="header-right" id="last-update">กำลังเชื่อมต่อ...</div>
+</div>
+
+<!-- Stat cards -->
+<div class="stats-row" style="margin-top:20px;">
+  <div class="stat-card">
+    <div class="stat-label">Active ports</div>
+    <div class="stat-value" id="stat-ports" style="color:var(--blue)">0</div>
+    <div class="stat-sub">monitored</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Blocked IPs</div>
+    <div class="stat-value" id="stat-blocked" style="color:var(--red)">0</div>
+    <div class="stat-sub">active blocks</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total attacks</div>
+    <div class="stat-value" id="stat-attacks" style="color:var(--amber)">0</div>
+    <div class="stat-sub">detected</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Max pkt/s</div>
+    <div class="stat-value" id="stat-pps" style="color:var(--green)">0</div>
+    <div class="stat-sub">current peak</div>
+  </div>
+</div>
+
+<!-- Main grid -->
+<div class="grid">
+
+  <!-- Traffic graph -->
+  <div class="card col-2">
+    <div class="card-title">
+      <span class="dot" style="background:var(--blue)"></span>
+      Real-time Traffic
+    </div>
+    <div class="chart-wrap"><canvas id="traffic-chart"></canvas></div>
+  </div>
+
+  <!-- Topology -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:var(--purple)"></span>
+      Network Topology
+    </div>
+    <div class="topo-wrap">
+      <svg id="topo-svg" width="220" height="200" viewBox="0 0 220 200">
+        <!-- Controller -->
+        <rect x="70" y="8" width="80" height="30" rx="6" fill="#1a1f2e" stroke="var(--blue)" stroke-width="1.2"/>
+        <text x="110" y="27" text-anchor="middle" font-size="11" fill="var(--blue)" font-weight="600">Ryu Controller</text>
+        <!-- Switch -->
+        <rect x="75" y="80" width="70" height="30" rx="6" fill="#1a1f2e" stroke="var(--purple)" stroke-width="1.2"/>
+        <text x="110" y="99" text-anchor="middle" font-size="11" fill="var(--purple)" font-weight="600">Switch s1</text>
+        <!-- Line controller-switch -->
+        <line x1="110" y1="38" x2="110" y2="80" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4 2"/>
+        <!-- Hosts -->
+        <circle id="h1" cx="30"  cy="165" r="16" fill="#1a2e1a" stroke="var(--green)"  stroke-width="1.2"/>
+        <circle id="h2" cx="80"  cy="165" r="16" fill="#1a2e1a" stroke="var(--green)"  stroke-width="1.2"/>
+        <circle id="h3" cx="140" cy="165" r="16" fill="#1a2e1a" stroke="var(--green)"  stroke-width="1.2"/>
+        <circle id="h4" cx="190" cy="165" r="16" fill="#2e1a1a" stroke="var(--red)"    stroke-width="1.2"/>
+        <text x="30"  y="169" text-anchor="middle" font-size="10" fill="var(--green)">h1</text>
+        <text x="80"  y="169" text-anchor="middle" font-size="10" fill="var(--green)">h2</text>
+        <text x="140" y="169" text-anchor="middle" font-size="10" fill="var(--green)">h3</text>
+        <text x="190" y="169" text-anchor="middle" font-size="10" fill="var(--red)">h4</text>
+        <text x="190" y="190" text-anchor="middle" font-size="9" fill="var(--red)">attacker</text>
+        <!-- Lines switch-hosts -->
+        <line x1="95"  y1="110" x2="38"  y2="149" stroke="var(--border)" stroke-width="1"/>
+        <line x1="100" y1="110" x2="80"  y2="149" stroke="var(--border)" stroke-width="1"/>
+        <line x1="120" y1="110" x2="140" y2="149" stroke="var(--border)" stroke-width="1"/>
+        <line id="h4-line" x1="125" y1="110" x2="182" y2="149" stroke="var(--border)" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Blocked IPs -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:var(--red)"></span>
+      Blocked IPs
+    </div>
+    <div class="ip-list" id="blocked-list">
+      <div class="empty">ยังไม่มี blocked IPs</div>
+    </div>
+  </div>
+
+  <!-- ML Confidence -->
+  <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:var(--amber)"></span>
+      ML Confidence — per port
+    </div>
+    <div class="meter-grid" id="ml-meters">
+      <div class="empty" style="grid-column:span 2">รอข้อมูล...</div>
+    </div>
+  </div>
+
+  <!-- Feature Importance -->
+  <!-- <div class="card">
+    <div class="card-title">
+      <span class="dot" style="background:var(--purple)"></span>
+      Feature Importance (XAI)
+    </div>
+    <div id="feat-list" style="display:flex;flex-direction:column;gap:8px;">
+      <div class="empty">กำลังโหลด...</div>
+    </div>
+  </div> -->
+
+  <!-- LSTM vs RF Comparison -->
+  <!-- <div class="card col-2">
+    <div class="card-title">
+      <span class="dot" style="background:var(--blue)"></span>
+      เปรียบเทียบ RF vs LSTM (Roshni et al. 2025)
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Random Forest (โปรเจคนี้)</div>
+        <div style="display:flex;flex-direction:column;gap:7px;" id="rf-stats">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Accuracy</span>
+            <span style="color:var(--green);font-weight:600">99.95%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Response Time</span>
+            <span style="color:var(--amber);font-weight:600">2-5 วินาที</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">CPU Usage</span>
+            <span style="color:var(--green);font-weight:600">&lt; 15%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Explainability</span>
+            <span style="color:var(--green);font-weight:600">✅ Feature Importance</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Database</span>
+            <span style="color:var(--green);font-weight:600">✅ PostgreSQL</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Notification</span>
+            <span style="color:var(--green);font-weight:600">✅ Line + Email</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">LSTM (Roshni et al. 2025)</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Accuracy</span>
+            <span style="color:var(--amber);font-weight:600">97.3%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Response Time</span>
+            <span style="color:var(--green);font-weight:600">18.6 ms</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">CPU Usage</span>
+            <span style="color:var(--amber);font-weight:600">18.4% avg / 31% peak</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Explainability</span>
+            <span style="color:var(--red);font-weight:600">❌ Black Box</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Database</span>
+            <span style="color:var(--red);font-weight:600">❌ ไม่มี</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--muted)">Notification</span>
+            <span style="color:var(--red);font-weight:600">❌ ไม่มี</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Attack log -->
+  <div class="card col-3">
+    <div class="card-title">
+      <span class="dot" style="background:var(--amber)"></span>
+      Attack Log
+    </div>
+    <div class="log-list" id="attack-log">
+      <div class="empty">ยังไม่มี events</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let attackCount = 0;
+let chart;
+
+// ─── Chart setup ───
+const ctx = document.getElementById('traffic-chart').getContext('2d');
+chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      { label: 'Port 1 (pkt/s)', data: [], borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,.08)', tension: 0.4, fill: true, pointRadius: 0, borderWidth: 1.5 },
+      { label: 'Port 2 (pkt/s)', data: [], borderColor: '#3fb950', backgroundColor: 'rgba(63,185,80,.08)',  tension: 0.4, fill: true, pointRadius: 0, borderWidth: 1.5 },
+      { label: 'Port 3 (pkt/s)', data: [], borderColor: '#bc8cff', backgroundColor: 'rgba(188,140,255,.08)',tension: 0.4, fill: true, pointRadius: 0, borderWidth: 1.5 },
+      { label: 'Port 4 (pkt/s)', data: [], borderColor: '#f85149', backgroundColor: 'rgba(248,81,73,.08)',  tension: 0.4, fill: true, pointRadius: 0, borderWidth: 1.5 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, animation: false,
+    plugins: { legend: { labels: { color: '#7d8590', font: { size: 11 }, boxWidth: 12 } } },
+    scales: {
+      x: { ticks: { color: '#7d8590', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: '#21262d' } },
+      y: { ticks: { color: '#7d8590', font: { size: 10 } }, grid: { color: '#21262d' }, min: 0 }
+    }
+  }
+});
+
+// ─── Socket update ───
+// Polling ทุก 2 วินาที
+async function poll() {
+  try {
+    const res  = await fetch('/api/state');
+    const data = await res.json();
+    const now  = new Date().toLocaleTimeString('th-TH');
+    document.getElementById('conn-dot').style.background = 'var(--green)';
+    document.getElementById('conn-dot').style.boxShadow  = '0 0 6px var(--green)';
+    document.getElementById('last-update').textContent   = 'อัปเดต: ' + now;
+    updateChart(data.traffic);
+    updateStats(data);
+    updateBlocked(data.blocked);
+    updateLog(data.log);
+    updateML(data.ml);
+    updateTopo(data.blocked);
+  } catch(e) {
+    document.getElementById('conn-dot').style.background = 'var(--red)';
+    document.getElementById('conn-dot').style.boxShadow  = '0 0 6px var(--red)';
+  }
+}
+setInterval(poll, 1000);
+poll();
+
+function updateChart(traffic) {
+  if (!traffic.length) return;
+  const latest = traffic[traffic.length - 1];
+  const labels = chart.data.labels;
+  if (labels[labels.length-1] !== latest.time) {
+    labels.push(latest.time);
+    if (labels.length > 20) labels.shift();
+    // group by port
+    const byPort = {};
+    traffic.forEach(t => { byPort[t.port] = t.pps; });
+    [1,2,3,4].forEach((p, i) => {
+      chart.data.datasets[i].data.push(byPort[p] || 0);
+      if (chart.data.datasets[i].data.length > 20) chart.data.datasets[i].data.shift();
+    });
+    chart.update('none');
+  }
+}
+
+function updateStats(data) {
+  document.getElementById('stat-ports').textContent   = Object.keys(data.ports).length;
+  document.getElementById('stat-blocked').textContent = data.blocked.length;
+  attackCount = Math.max(attackCount, data.log.length);
+  document.getElementById('stat-attacks').textContent = attackCount;
+  const maxPps = Object.values(data.ports).reduce((m, p) => Math.max(m, p.pps||0), 0);
+  document.getElementById('stat-pps').textContent = maxPps.toFixed(0);
+}
+
+function updateBlocked(blocked) {
+  const el = document.getElementById('blocked-list');
+  if (!blocked.length) { el.innerHTML = '<div class="empty">ยังไม่มี blocked IPs</div>'; return; }
+  el.innerHTML = blocked.map(b => `
+    <div class="ip-row">
+      <span class="ip-addr">${b.ip}</span>
+      <span class="ip-meta">port ${b.port}</span>
+      <span class="badge badge-red">conf ${b.conf}%</span>
+      <span class="ip-meta">${b.time}</span>
+      <button onclick="unblockPort('${b.port}')"
+        style="margin-left:auto;padding:3px 10px;border-radius:4px;
+               border:1px solid var(--green);background:transparent;
+               color:var(--green);cursor:pointer;font-size:11px">
+        Unblock
+      </button>
+    </div>`).join('');
+}
+
+function updateLog(log) {
+  const el = document.getElementById('attack-log');
+  if (!log.length) { el.innerHTML = '<div class="empty">ยังไม่มี events</div>'; return; }
+  el.innerHTML = log.map(l => {
+    const conf = l.conf || 0;
+    const color = conf >= 90 ? 'var(--red)' : conf >= 70 ? 'var(--amber)' : 'var(--blue)';
+    return `<div class="log-row">
+      <span class="log-time">${l.time}</span>
+      <span class="log-msg">🔴 ATTACK detected on port <strong>${l.port}</strong></span>
+      <span class="log-conf" style="color:${color}">${conf}%</span>
+      <span class="badge badge-red">BLOCKED</span>
+    </div>`;
+  }).join('');
+}
+
+function updateML(ml) {
+  const el = document.getElementById('ml-meters');
+  const ports = Object.keys(ml);
+  if (!ports.length) { el.innerHTML = '<div class="empty" style="grid-column:span 2">รอข้อมูล...</div>'; return; }
+  el.innerHTML = ports.map(p => {
+    const v = ml[p];
+    const conf = v.conf || 0;
+    const color = v.pred === 1 ? (conf >= 90 ? 'var(--red)' : 'var(--amber)') : 'var(--green)';
+    const label = v.pred === 1 ? 'ATTACK' : 'NORMAL';
+    return `<div class="meter-item">
+      <div class="meter-label">Port ${p} — <span style="color:${color}">${label}</span></div>
+      <div class="meter-bar-bg">
+        <div class="meter-bar" style="width:${conf}%;background:${color}"></div>
+      </div>
+      <div class="meter-val" style="color:${color}">${conf}%</div>
+    </div>`;
+  }).join('');
+}
+
+function updateTopo(blocked) {
+  const h4line = document.getElementById('h4-line');
+  const h4circ = document.getElementById('h4');
+  if (blocked.length > 0) {
+    h4line.setAttribute('stroke', 'var(--red)');
+    h4line.setAttribute('stroke-dasharray', '4 2');
+    h4circ.setAttribute('fill', '#3d1a1a');
+  } else {
+    h4line.setAttribute('stroke', 'var(--border)');
+    h4line.removeAttribute('stroke-dasharray');
+    h4circ.setAttribute('fill', '#2e1a1a');
+  }
+}
+
+
+
+async function loadFeatureImportance() {
+  try {
+    const res  = await fetch('/api/feature_importance');
+    const data = await res.json();
+    if (data.error) return;
+    const el = document.getElementById('feat-list');
+    el.innerHTML = data.map(f => {
+      const pct   = f.importance;
+      const color = pct > 20 ? 'var(--red)' : pct > 10 ? 'var(--amber)' : 'var(--blue)';
+      return `<div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+          <span style="font-size:11px;color:var(--muted)">${f.label}</span>
+          <span style="font-size:11px;font-weight:600;color:${color}">${pct}%</span>
+        </div>
+        <div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${Math.min(pct*3,100)}%;background:${color};border-radius:3px;transition:width .6s ease;"></div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+loadFeatureImportance();
+setInterval(loadFeatureImportance, 30000);
+
+async function unblockPort(port) {
+  if (!confirm('Unblock port ' + port + '?')) return;
+  try {
+    const res = await fetch('/api/unblock/' + port, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    if (d.ok) {
+      poll();
+    } else {
+      alert('Failed: ' + (d.error || 'unknown'));
+    }
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
