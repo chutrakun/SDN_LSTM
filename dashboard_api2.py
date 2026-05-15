@@ -296,12 +296,23 @@ def _restart_mininet(topo_type):
         topology_status['message'] = f'Starting new {topo_type} topology...'
         print(f"[Topo] Step4: launching new Mininet ({topo_type})")
 
+        # ส่ง TOPO_TYPE ให้ Ryu controller รู้ว่าต้อง install flows แบบไหน
+        # Ryu watchdog จะ restart Ryu เองและ Ryu จะอ่าน env var นี้
+        env = os.environ.copy()
+        env['TOPO_TYPE'] = topo_type
+
+        # pkill ryu-manager เพื่อให้ watchdog restart พร้อม env ใหม่
+        subprocess.run(['pkill', '-f', 'ryu-manager'],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(2)  # รอ watchdog restart
+
         log_f = open(LOG_FILE, 'w')
         proc = subprocess.Popen(
-            ['sudo', PYTHON_BIN, TOPO_SCRIPT, '--background'],
+            ['sudo', '-E', PYTHON_BIN, TOPO_SCRIPT, '--background'],
             stdout=log_f,
             stderr=subprocess.STDOUT,
             stdin=subprocess.DEVNULL,
+            env=env,
         )
 
         # รอ 10 วินาที แล้วดูว่า process ยังอยู่ไหม

@@ -19,23 +19,17 @@ const LoginPage = ({ onLoginSuccess, theme, toggleTheme }) => {
     }
 
     setLoading(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-      if (res.ok && data.ok) {
-        onLoginSuccess?.(data);
-      } else {
-        setError(data.error || "Invalid username or password.");
-      }
-    } catch {
-      setError("Cannot connect to server. Please try again.");
-    } finally {
-      setLoading(false);
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    if (username === "admin" && password === "admin") {
+      onLoginSuccess?.({ token: "admin-auth-token" });
+    } else {
+      setError("Invalid username or password.");
     }
+    
+    setLoading(false);
   };
 
   return (

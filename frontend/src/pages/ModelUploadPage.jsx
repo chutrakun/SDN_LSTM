@@ -19,20 +19,20 @@ const FileField = ({ label, required, onChange }) => (
 );
 
 const ModelUploadPage = () => {
-  const [models,       setModels]       = useState([]);
-  const [isLoading,    setIsLoading]    = useState(true);
-  const [file,         setFile]         = useState(null);
-  const [scalerFile,   setScalerFile]   = useState(null);
-  const [leFile,       setLeFile]       = useState(null);
-  const [modelName,    setModelName]    = useState('');
-  const [description,  setDescription]  = useState('');
-  const [isUploading,  setIsUploading]  = useState(false);
+  const [models, setModels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [scalerFile, setScalerFile] = useState(null);
+  const [leFile, setLeFile] = useState(null);
+  const [modelName, setModelName] = useState('');
+  const [description, setDescription] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
 
   const fetchModels = async () => {
     setIsLoading(true);
     try {
-      const res  = await fetch(`${API_BASE}/api/models`);
+      const res = await fetch(`${API_BASE}/api/models`);
       const data = await res.json();
       if (Array.isArray(data)) setModels(data);
     } catch (err) {
@@ -54,12 +54,12 @@ const ModelUploadPage = () => {
     const fd = new FormData();
     fd.append('file', file);
     if (scalerFile) fd.append('scaler', scalerFile);
-    if (leFile)     fd.append('le', leFile);
-    fd.append('name',        modelName || file.name);
+    if (leFile) fd.append('le', leFile);
+    fd.append('name', modelName || file.name);
     fd.append('description', description);
 
     try {
-      const res  = await fetch(`${API_BASE}/api/models/upload`, { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE}/api/models/upload`, { method: 'POST', body: fd });
       const data = await res.json();
       if (res.ok && data.ok) {
         setUploadStatus({ type: 'success', msg: 'Model uploaded successfully!' });
@@ -78,7 +78,7 @@ const ModelUploadPage = () => {
 
   const handleSetActive = async (id) => {
     try {
-      const res  = await fetch(`${API_BASE}/api/models/active`, {
+      const res = await fetch(`${API_BASE}/api/models/active`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
@@ -113,7 +113,7 @@ const ModelUploadPage = () => {
                 className="form-input"
                 value={modelName}
                 onChange={(e) => setModelName(e.target.value)}
-                placeholder="e.g. Random Forest V2"
+                placeholder="e.g. LSTM V2"
               />
             </div>
 

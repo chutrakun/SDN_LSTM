@@ -52,7 +52,7 @@ import LoginPage from "./pages/LoginPage";
 
 function App() {
   const [topologyType, setTopologyType] = useState("default");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // TODO: revert to () => !!localStorage.getItem("auth_token") when login is ready
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("auth_token"));
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
@@ -74,31 +74,34 @@ function App() {
     setIsLoggedIn(true);
   };
 
-  if (!isLoggedIn) {
-    return <LoginPage onLoginSuccess={handleLoginSuccess} theme={theme} toggleTheme={toggleTheme} />;
-  }
-
   return (
     <Router>
-      <div>
-        <Navbar theme={theme} toggleTheme={toggleTheme} />
+      {!isLoggedIn ? (
         <Routes>
-          <Route path="/" element={<DashboardPage topologyType={topologyType} />} />
-          <Route
-            path="/settings"
-            element={
-              <TopologySettingsPage
-                topologyType={topologyType}
-                setTopologyType={setTopologyType}
-              />
-            }
-          />
-          <Route path="/report" element={<ReportPage />} />
-          <Route path="/models" element={<ModelUploadPage />} />
-          <Route path="/login" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess} theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-      </div>
+      ) : (
+        <div>
+          <Navbar theme={theme} toggleTheme={toggleTheme} />
+          <Routes>
+            <Route path="/" element={<DashboardPage topologyType={topologyType} />} />
+            <Route
+              path="/settings"
+              element={
+                <TopologySettingsPage
+                  topologyType={topologyType}
+                  setTopologyType={setTopologyType}
+                />
+              }
+            />
+            <Route path="/report" element={<ReportPage />} />
+            <Route path="/models" element={<ModelUploadPage />} />
+            <Route path="/login" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      )}
     </Router>
   );
 }

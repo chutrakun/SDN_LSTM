@@ -75,13 +75,14 @@ const ReportPage = () => {
   const [period, setPeriod]           = useState(7);
   const [loading, setLoading]         = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError]             = useState(null);
 
   const [summary, setSummary]         = useState(null);
   const [attackTypes, setAttackTypes] = useState([]);
   const [topPorts, setTopPorts]       = useState([]);
   const [hourlyData, setHourlyData]   = useState([]);
   const [attackLog, setAttackLog]     = useState([]);
-  const [topoEvents, setTopoEvents]   = useState([]);
+  const [topoEvents, setTopoEvents]  = useState([]);
 
   // ─── Date range for export ───
   const today = new Date().toISOString().slice(0, 10);
@@ -89,6 +90,7 @@ const ReportPage = () => {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const [sum, types, ports, hourly, attacks, topo] = await Promise.all([
         fetch(`${API_BASE}/api/report/summary?period=${period}`).then(r => r.json()),
@@ -98,6 +100,12 @@ const ReportPage = () => {
         fetch(`${API_BASE}/api/report/attacks?from=${weekAgo}&to=${today}T23:59:59&limit=100`).then(r => r.json()),
         fetch(`${API_BASE}/api/report/topology-events?days=${period}`).then(r => r.json()),
       ]);
+
+      // ตรวจสอบ error จาก API
+      if (sum?.error) {
+        setError(`API Error: ${sum.error}`);
+      }
+
       setSummary(sum);
       setAttackTypes(Array.isArray(types) ? types : []);
       setTopPorts(Array.isArray(ports) ? ports : []);
@@ -107,6 +115,7 @@ const ReportPage = () => {
       setLastUpdated(new Date().toLocaleTimeString('th-TH'));
     } catch (e) {
       console.error('Report fetch error:', e);
+      setError(`เชื่อมต่อ API ไม่ได้ — ตรวจสอบว่า Dashboard API กำลังรันอยู่ (port 5000)`);
     } finally {
       setLoading(false);
     }
@@ -249,6 +258,17 @@ const ReportPage = () => {
         <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--muted)' }}>
           <div style={{ fontSize: 32, marginBottom: 12, animation: 'spin 1.2s linear infinite', display: 'inline-block' }}>⟳</div>
           <div>กำลังโหลดข้อมูล...</div>
+        </div>
+      )}
+
+      {error && (
+        <div style={{
+          margin: '16px 0', padding: '12px 16px', borderRadius: 8,
+          background: 'rgba(248,81,73,0.1)', border: '1px solid rgba(248,81,73,0.3)',
+          color: '#f85149', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <AlertTriangle size={16} />
+          {error}
         </div>
       )}
 

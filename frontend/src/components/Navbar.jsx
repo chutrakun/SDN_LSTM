@@ -37,13 +37,25 @@ const Navbar = ({ theme, toggleTheme }) => {
         </NavLink>
       </div>
 
-      <button
-        onClick={toggleTheme}
-        className="theme-toggle"
-        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      >
-        {theme === 'dark' ? '☀️' : '🌙'}
-      </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <button
+          onClick={() => {
+            localStorage.removeItem("auth_token");
+            window.location.reload();
+          }}
+          className="theme-toggle"
+          title="Logout"
+        >
+          🚪
+        </button>
+        <button
+          onClick={toggleTheme}
+          className="theme-toggle"
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+      </div>
     </nav>
   );
 };
