@@ -10,7 +10,7 @@
 #    ./ryu_watchdog.sh
 # ─────────────────────────────────────────────
 
-RYU_APP="/home/beepbeep-kun/Anti_sdn/controller/ryu_controller2.py"
+RYU_APP="/home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py"
 RYU_BIN="/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/ryu-manager"
 SETUP_FLOWS="/home/beepbeep-kun/setup_flows.sh"
 PROJECT_DIR="/home/beepbeep-kun/Anti_sdn"

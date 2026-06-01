@@ -1,0 +1,704 @@
+🚀 Ryu Watchdog started
+   App        : /home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py
+   Setup flows: /home/beepbeep-kun/setup_flows.sh
+   Auto-restart on crash: YES (max 20 times)
+────────────────────────────────────────
+[19:57:10] ▶ Starting Ryu... (restart #0)
+[19:57:10] ⏳ รอ Ryu handshake กับ OVS 5s...
+loading app /home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py
+2026-06-01 19:57:11.582341: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-06-01 19:57:11.620494: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-06-01 19:57:11.620965: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-06-01 19:57:12.412663: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+✅ Database connected successfully
+loading app ryu.controller.ofp_handler
+instantiating app /home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py of IntelligentController
+✅ LSTM Model & Scaler loaded successfully (Model ID: 5)
+instantiating app ryu.controller.ofp_handler of OFPHandler
+📡 Installing s1 static flows (ACL mode)...
+   s1 LOCAL MAC = 00:00:00:00:00:fe
+✅ s1 static flows installed (ARP + IP + h→h + LOCAL + WebServer)
+[19:57:15] 🔧 Bringing up s1 interface...
+[19:57:16] 📡 Installing OVS flows...
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+SIOCSARP: No such device
+✅ Flows installed successfully
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=7223.0 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8267.2 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8267.4 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8266.9 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8268.3 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8267.1 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8266.9 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8267.2 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=8267.5 hits=0
+[LSTM] port=1 label='BENIGN' conf=1.0000 pps=2303.3 hits=0
+[LSTM] port=4 label='BENIGN' conf=0.9991 pps=38453.1 hits=0
+[ALERT] port=4 consecutive hit #1/2
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=145861.4 hits=1
+[ALERT] port=4 consecutive hit #2/2
+🚨 HARD LIMIT REACHED on port 4 (pps=145861.37783416337)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9952 pps=133487.1 hits=2
+[ALERT] port=4 consecutive hit #3/2
+🚨 HARD LIMIT REACHED on port 4 (pps=133487.13643678022)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9960 pps=90711.7 hits=3
+[ALERT] port=4 consecutive hit #4/2
+🚨 HARD LIMIT REACHED on port 4 (pps=90711.68953156688)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9954 pps=118742.4 hits=4
+[ALERT] port=4 consecutive hit #5/2
+🚨 HARD LIMIT REACHED on port 4 (pps=118742.40955286223)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9962 pps=80699.9 hits=5
+[ALERT] port=4 consecutive hit #6/2
+🚨 HARD LIMIT REACHED on port 4 (pps=80699.91919320477)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9954 pps=119028.7 hits=6
+[ALERT] port=4 consecutive hit #7/2
+🚨 HARD LIMIT REACHED on port 4 (pps=119028.70766605496)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9953 pps=126035.8 hits=7
+[ALERT] port=4 consecutive hit #8/2
+🚨 HARD LIMIT REACHED on port 4 (pps=126035.77387215599)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9961 pps=85469.4 hits=8
+[ALERT] port=4 consecutive hit #9/2
+🚨 HARD LIMIT REACHED on port 4 (pps=85469.42127019765)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=148463.3 hits=9
+[ALERT] port=4 consecutive hit #10/2
+🚨 HARD LIMIT REACHED on port 4 (pps=148463.28894140743)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9959 pps=95611.2 hits=10
+[ALERT] port=4 consecutive hit #11/2
+🚨 HARD LIMIT REACHED on port 4 (pps=95611.23921545828)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=145206.9 hits=11
+[ALERT] port=4 consecutive hit #12/2
+🚨 HARD LIMIT REACHED on port 4 (pps=145206.89385408032)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9955 pps=116211.4 hits=12
+[ALERT] port=4 consecutive hit #13/2
+🚨 HARD LIMIT REACHED on port 4 (pps=116211.43224041983)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9952 pps=137009.0 hits=13
+[ALERT] port=4 consecutive hit #14/2
+🚨 HARD LIMIT REACHED on port 4 (pps=137008.97678377255)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=147513.2 hits=14
+[ALERT] port=4 consecutive hit #15/2
+🚨 HARD LIMIT REACHED on port 4 (pps=147513.17937353248)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=144132.0 hits=15
+[ALERT] port=4 consecutive hit #16/2
+🚨 HARD LIMIT REACHED on port 4 (pps=144132.04218399507)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=0.9954 pps=118724.0 hits=16
+[ALERT] port=4 consecutive hit #17/2
+🚨 HARD LIMIT REACHED on port 4 (pps=118724.04033778486)
+⚠️  Cannot block — no IP mapped for port 4
+[LSTM] port=4 label='BENIGN' conf=1.0000 pps=12226.8 hits=17
+[ALERT] port=4 consecutive hit #18/2
+🚨 HARD LIMIT REACHED on port 4 (pps=12226.831640302926)
+⚠️  Cannot block — no IP mapped for port 4
+./ryu_watchdog.sh: line 74: 20499 Killed                  $RYU_BIN --ofp-tcp-listen-port 6653 --observe-links "$RYU_APP"
+[20:03:42] ⚠️  Ryu exited (code=137)
+[20:03:42] 🔄 Restarting in 3s...
+[20:03:45] ▶ Starting Ryu... (restart #1)
+[20:03:45] ⏳ รอ Ryu handshake กับ OVS 5s...
+loading app /home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py
+2026-06-01 20:03:46.249715: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-06-01 20:03:46.287942: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-06-01 20:03:46.288321: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-06-01 20:03:47.049176: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+✅ Database connected successfully
+loading app ryu.controller.ofp_handler
+instantiating app /home/beepbeep-kun/Anti_sdn/controller/ryu_controller.py of IntelligentController
+✅ LSTM Model & Scaler loaded successfully (Model ID: 5)
+instantiating app ryu.controller.ofp_handler of OFPHandler
+📡 Installing s1 static flows (ACL mode)...
+   s1 LOCAL MAC = 00:00:00:00:00:fe
+[20:03:50] 🔧 Bringing up s1 interface...
+✅ s1 static flows installed (ARP + IP + h→h + LOCAL + WebServer)
+[20:03:50] 📡 Installing OVS flows...
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s2 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s3 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+ovs-ofctl: s4 is not a bridge or a socket
+SIOCSARP: No such device
+✅ Flows installed successfully
+[LSTM] port=4 label='BENIGN' conf=0.9999 pps=21752.8 hits=0
+[ALERT] port=4 consecutive hit #1/2
+[LSTM] port=4 label='BENIGN' conf=0.9951 pps=141193.5 hits=1
+[ALERT] port=4 consecutive hit #2/2
+🚨 HARD LIMIT REACHED on port 4 (pps=141193.52612266736)
+AI Prediction: DDoS-Anomaly with confidence 0.99
+🚫 ACL BLOCK IP 10.0.0.4 (from port 4) | Attack: DDoS-Anomaly 99.00%
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+✅ ACL Unblocked IP 10.0.0.4 (port 4, expired)
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[LSTM] port=4 label='BENIGN' conf=0.9990 pps=39577.8 hits=0
+[ALERT] port=4 consecutive hit #1/2
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[LSTM] port=4 label='BENIGN' conf=0.9948 pps=178381.6 hits=1
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[ALERT] port=4 consecutive hit #2/2
+🚨 HARD LIMIT REACHED on port 4 (pps=178381.56974207098)
+AI Prediction: DDoS-Anomaly with confidence 0.99
+🚫 ACL BLOCK IP 10.0.0.4 (from port 4) | Attack: DDoS-Anomaly 99.00%
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[LSTM] port=2 label='BENIGN' conf=0.9996 pps=954.5 hits=0
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[LSTM] port=2 label='BENIGN' conf=0.9950 pps=149913.0 hits=0
+[ALERT] port=2 consecutive hit #1/2
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+[LSTM] port=2 label='BENIGN' conf=0.9950 pps=151771.9 hits=1
+[ALERT] port=2 consecutive hit #2/2
+🚨 HARD LIMIT REACHED on port 2 (pps=151771.86777887112)
+AI Prediction: DDoS-Anomaly with confidence 0.99
+🚫 ACL BLOCK IP 10.0.0.2 (from port 2) | Attack: DDoS-Anomaly 99.00%
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+✅ ACL Unblocked IP 10.0.0.4 (port 4, expired)
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+✅ ACL Unblocked IP 10.0.0.2 (port 2, expired)
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'
+❌ Error processing unblock IPC: [Errno 1] Operation not permitted: '/tmp/unblock_requests.txt'

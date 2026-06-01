@@ -26,10 +26,10 @@ const DashboardPage = ({ topologyType }) => {
     return () => clearInterval(id);
   }, []);
 
-  const handleUnblockPort = async (port) => {
-    if (!window.confirm(`Unblock port ${port}?`)) return;
+  const handleUnblockIP = async (ip) => {
+    if (!window.confirm(`Unblock IP ${ip}?`)) return;
     try {
-      const res = await fetch(`/api/unblock/${port}`, {
+      const res = await fetch(`/api/unblock/ip/${encodeURIComponent(ip)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -48,13 +48,14 @@ const DashboardPage = ({ topologyType }) => {
         <h1>SDN Intelligent Security Dashboard</h1>
         <span className="badge badge-blue">Ryu 4.34</span>
         <span className="badge badge-purple">LSTM</span>
+        <span className="badge badge-green" style={{fontSize:'10px'}}>ACL Mode</span>
         <div className="header-right">{lastUpdate}</div>
       </div>
 
       <Dashboard
         state={state}
         topologyType={topologyType}
-        unblockPort={handleUnblockPort}
+        unblockIP={handleUnblockIP}
       />
     </div>
   );

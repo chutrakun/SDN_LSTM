@@ -11,7 +11,7 @@ const StatCard = ({ label, value, sub, color, glowColor }) => (
   </div>
 );
 
-const Dashboard = ({ state, topologyType, unblockPort }) => {
+const Dashboard = ({ state, topologyType, unblockIP }) => {
   const { ports, blocked, log, ml, traffic } = state;
   const attackCount = log.length;
   const maxPps = Object.values(ports).reduce((m, p) => Math.max(m, p.pps || 0), 0);
@@ -21,7 +21,7 @@ const Dashboard = ({ state, topologyType, unblockPort }) => {
       {/* Stat cards */}
       <div className="stats-row" style={{ marginTop: '20px' }}>
         <StatCard label="Active Ports" value={Object.keys(ports).length} sub="monitored" color="var(--blue)" />
-        <StatCard label="Blocked IPs" value={blocked.length} sub="active blocks" color="var(--red)" />
+        <StatCard label="Blocked IPs" value={blocked.length} sub="ACL active" color="var(--red)" />
         <StatCard label="Attacks" value={attackCount} sub="total detected" color="var(--amber)" />
         <StatCard label="Peak pkt/s" value={maxPps.toFixed(0)} sub="current max" color="var(--green)" />
       </div>
@@ -47,30 +47,32 @@ const Dashboard = ({ state, topologyType, unblockPort }) => {
             Network Topology
           </div>
           <div className="topo-wrap">
-            <TopologyView topologyType={topologyType} blockedPorts={blocked} />
+            <TopologyView topologyType={topologyType} blockedIPs={blocked} />
           </div>
         </div>
 
-        {/* Blocked IPs */}
+        {/* Blocked IPs (ACL) */}
         <div className="card">
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--red)', boxShadow: '0 0 6px var(--red)' }}></span>
-            Blocked IPs
+            ACL Blocked IPs
             {blocked.length > 0 && (
               <span className="badge badge-red" style={{ marginLeft: 'auto' }}>{blocked.length}</span>
             )}
           </div>
           <div className="ip-list">
             {blocked.length === 0 ? (
-              <div className="empty">No blocked IPs</div>
+              <div className="empty">No blocked IPs — all traffic allowed</div>
             ) : (
               blocked.map((b, i) => (
                 <div className="ip-row" key={i}>
                   <span className="ip-addr">{b.ip}</span>
-                  <span className="ip-meta">:{b.port}</span>
+                  <span className="badge badge-amber" style={{fontSize:'9px', padding:'2px 6px'}}>
+                    {b.label || 'Unknown'}
+                  </span>
                   <span className="badge badge-red">{b.conf}%</span>
                   <span className="ip-meta">{b.time}</span>
-                  <button className="unblock-btn" onClick={() => unblockPort(b.port)}>
+                  <button className="unblock-btn" onClick={() => unblockIP(b.ip)}>
                     Unblock
                   </button>
                 </div>
@@ -133,10 +135,11 @@ const Dashboard = ({ state, topologyType, unblockPort }) => {
                   <div className="log-row threat" key={i}>
                     <span className="log-time">{l.time}</span>
                     <span className="log-msg">
-                      Attack detected on port <strong>{l.port}</strong>
+                      {l.label || 'Attack'} from <strong>{l.ip}</strong>
+                      <span style={{opacity:.6, fontSize:'10px'}}> (port {l.port})</span>
                     </span>
                     <span className="log-conf" style={{ color }}>{conf}%</span>
-                    <span className="badge badge-red">BLOCKED</span>
+                    <span className="badge badge-red">ACL BLOCKED</span>
                   </div>
                 );
               })

@@ -46,18 +46,23 @@ def api_traffic():
 def api_attack():
     d = request.json
     port, ip, conf = d['port'], d['ip'], d['conf']
+    label = d.get('label', 'Unknown')
     ts = datetime.now().strftime('%H:%M:%S')
-    blocked_ips[ip] = {'time': ts, 'port': port, 'conf': round(conf*100,1), 'expire': time.time()+60}
-    attack_log.appendleft({'time': ts, 'port': port, 'ip': ip, 'conf': round(conf*100,1)})
+    blocked_ips[ip] = {
+        'time': ts, 'port': port,
+        'conf': round(conf*100,1),
+        'label': label,
+        'expire': time.time()+90   # ตรงกับ BLOCK_DURATION=90 ของ controller
+    }
+    attack_log.appendleft({'time': ts, 'port': port, 'ip': ip, 'conf': round(conf*100,1), 'label': label})
     ml_stats[str(port)] = {'pred': 1, 'conf': round(conf*100,1)}
     # บันทึกลง DB (fallback กรณี Ryu HAS_DB=False)
     try:
         import db_manager as db
-        attack_type = d.get('label', 'Unknown')
         pps_val = d.get('pps', 0)
         bps_val = d.get('bps', 0)
-        db.log_attack(port, pps_val, bps_val, conf, note=attack_type, attack_type=attack_type)
-        db.block_port(port, conf, 60)
+        db.log_attack(port, pps_val, bps_val, conf, note=label, attack_type=label)
+        db.block_port(port, conf, 90)
     except Exception:
         pass
     return jsonify({'ok': True})
@@ -77,7 +82,7 @@ def api_state():
         del blocked_ips[ip]
     return jsonify({
         'traffic': list(traffic_history)[-20:],
-        'blocked': [{'ip': k, **v} for k, v in blocked_ips.items()],
+        'blocked': [{'ip': k, 'label': v.get('label',''), **v} for k, v in blocked_ips.items()],
         'log':     list(attack_log)[:20],
         'ports':   port_stats,
         'ml':      ml_stats,
@@ -123,33 +128,69 @@ def api_db_traffic():
 
 @app.route('/api/unblock', methods=['POST'])
 def api_unblock():
+    """Unblock by IP or port (backward compatible)"""
     try:
         data = request.get_json(force=True) or {}
-        port = int(data.get('port', 0))
-        key  = f'port-{port}'
-        if key in blocked_ips:
-            del blocked_ips[key]
-        try:
-            import db_manager as db
-            db.unblock_port(port, 'manual')
-        except:
-            pass
-        return jsonify({'ok': True, 'port': port})
+        ip = data.get('ip')
+        port = data.get('port')
+
+        ips_to_unblock = []
+        # ลบจาก in-memory blocked_ips
+        if ip:
+            ips_to_unblock.append(ip)
+            if ip in blocked_ips:
+                port = blocked_ips[ip].get('port', port)
+                del blocked_ips[ip]
+        elif port:
+            # fallback: ลบ by port (backward compatible)
+            to_remove = [k for k, v in blocked_ips.items() if v.get('port') == int(port)]
+            for k in to_remove:
+                ips_to_unblock.append(k)
+                del blocked_ips[k]
+
+        # เขียน IPC file ส่งต่อให้ Ryu เพื่อปลดบล็อกใน OVS flow จริง
+        for target_ip in ips_to_unblock:
+            try:
+                with open('/tmp/unblock_requests.txt', 'a') as f:
+                    f.write(f"{target_ip}\n")
+            except Exception:
+                pass
+
+        # ลบจาก DB
+        if port:
+            try:
+                import db_manager as db
+                db.unblock_port(int(port), 'manual')
+            except:
+                pass
+
+        return jsonify({'ok': True, 'ip': ip, 'port': port})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 400
 
-@app.route('/api/unblock/<int:port>', methods=['POST'])
-def api_unblock_port(port):
+@app.route('/api/unblock/ip/<path:ip>', methods=['POST'])
+def api_unblock_ip(ip):
+    """Unblock by IP address"""
     try:
-        key = f'port-{port}'
-        if key in blocked_ips:
-            del blocked_ips[key]
+        port = None
+        if ip in blocked_ips:
+            port = blocked_ips[ip].get('port')
+            del blocked_ips[ip]
+
+        # เขียน IPC file ส่งต่อให้ Ryu เพื่อปลดบล็อกใน OVS flow จริง
         try:
-            import db_manager as db
-            db.unblock_port(port, 'manual')
-        except:
+            with open('/tmp/unblock_requests.txt', 'a') as f:
+                f.write(f"{ip}\n")
+        except Exception:
             pass
-        return jsonify({'ok': True, 'port': port})
+
+        if port:
+            try:
+                import db_manager as db
+                db.unblock_port(int(port), 'manual')
+            except:
+                pass
+        return jsonify({'ok': True, 'ip': ip})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 400
 
@@ -334,7 +375,25 @@ def write_topology_file(topo_type):
 from mininet.node import RemoteController, OVSSwitch
 from mininet.log import setLogLevel, info
 from mininet.link import TCLink
-import sys, time
+import sys, time, os
+
+def create_webroot():
+    webroot = '/tmp/webroot'
+    os.makedirs(webroot, exist_ok=True)
+    html = '''<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>SDN Web Server</title>
+<style>body{font-family:sans-serif;background:#0d1520;color:#e0e0e0;
+display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.c{text-align:center;padding:40px;background:rgba(255,255,255,0.05);
+border-radius:16px;border:1px solid rgba(255,255,255,0.1);}
+h1{color:#4da6ff;}.s{color:#00e5a0;font-size:48px;}</style>
+</head><body><div class="c"><div class="s">&#x2705;</div>
+<h1>SDN Web Server</h1><p>Server is running</p>
+<p style="color:#8899aa">IP: 10.0.0.100 | ACL Protection Active</p>
+</div></body></html>'''
+    with open(os.path.join(webroot, 'index.html'), 'w') as f:
+        f.write(html)
+    info('*** Web content created\\n')
 
 def run():
     setLogLevel('info')
@@ -348,9 +407,23 @@ def run():
     info('*** Adding switches and hosts\\n')
 """
 
+    # Web server host + start command (เพิ่มในทุก topology)
+    webserver_host = """
+    # Web Server
+    h_server = net.addHost('h_server', ip='10.0.0.100/24', mac='00:00:00:00:00:64')
+"""
+
+    webserver_link_s1 = """    net.addLink(h_server, s1, bw=100, delay='1ms')
+"""
+
     footer = """
     info('*** Starting network\\n')
     net.start()
+
+    # Start web server
+    create_webroot()
+    info('*** Starting web server on h_server (port 80)\\n')
+    h_server.cmd('python3 -m http.server 80 --directory /tmp/webroot &')
 
     info('*** Testing connectivity\\n')
     net.pingAll()
@@ -388,12 +461,13 @@ if __name__ == '__main__':
     h2 = net.addHost('h2', ip='10.0.0.2/24')
     h3 = net.addHost('h3', ip='10.0.0.3/24')
     h4 = net.addHost('h4', ip='10.0.0.4/24')
-
+""" + webserver_host + """
     net.addLink(h1, s2, bw=100, delay='1ms')
     net.addLink(h2, s2, bw=100, delay='1ms')
     net.addLink(h3, s3, bw=100, delay='1ms')
     net.addLink(h4, s3, bw=100, delay='1ms')
-"""
+""" + webserver_link_s1
+
     elif topo_type == 'mesh':
         body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13', stp=True)
     s2 = net.addSwitch('s2', protocols='OpenFlow13', stp=True)
@@ -411,30 +485,30 @@ if __name__ == '__main__':
     h2 = net.addHost('h2', ip='10.0.0.2/24')
     h3 = net.addHost('h3', ip='10.0.0.3/24')
     h4 = net.addHost('h4', ip='10.0.0.4/24')
-
+""" + webserver_host + """
     net.addLink(h1, s1, bw=100, delay='1ms')
     net.addLink(h2, s2, bw=100, delay='1ms')
     net.addLink(h3, s3, bw=100, delay='1ms')
     net.addLink(h4, s4, bw=100, delay='1ms')
-"""
+""" + webserver_link_s1
+
     else:
-        body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13', stp=True)
+        body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13')
 
     h1 = net.addHost('h1', ip='10.0.0.1/24')
     h2 = net.addHost('h2', ip='10.0.0.2/24')
     h3 = net.addHost('h3', ip='10.0.0.3/24')
     h4 = net.addHost('h4', ip='10.0.0.4/24')
-
+""" + webserver_host + """
     net.addLink(h1, s1, bw=100, delay='1ms')
     net.addLink(h2, s1, bw=100, delay='1ms')
     net.addLink(h3, s1, bw=100, delay='1ms')
     net.addLink(h4, s1, bw=100, delay='1ms')
-"""
+""" + webserver_link_s1
 
     os.makedirs('topology', exist_ok=True)
     with open('topology/network_topology.py', 'w') as f:
         f.write(header + body + footer)
-
 
 # ─────────────────────────────────────────────────────
 # Report API Endpoints

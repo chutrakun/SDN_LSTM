@@ -394,7 +394,7 @@ function updateBlocked(blocked) {
       <span class="ip-meta">port ${b.port}</span>
       <span class="badge badge-red">conf ${b.conf}%</span>
       <span class="ip-meta">${b.time}</span>
-      <button onclick="unblockPort('${b.port}')"
+      <button onclick="unblockPort('${b.ip}', '${b.port}')"
         style="margin-left:auto;padding:3px 10px;border-radius:4px;
                border:1px solid var(--green);background:transparent;
                color:var(--green);cursor:pointer;font-size:11px">
@@ -477,12 +477,13 @@ async function loadFeatureImportance() {
 loadFeatureImportance();
 setInterval(loadFeatureImportance, 30000);
 
-async function unblockPort(port) {
-  if (!confirm('Unblock port ' + port + '?')) return;
+async function unblockPort(ip, port) {
+  if (!confirm('Unblock IP ' + ip + '?')) return;
   try {
-    const res = await fetch('/api/unblock/' + port, {
+    const res = await fetch('/api/unblock', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'}
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ ip: ip, port: parseInt(port) })
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();

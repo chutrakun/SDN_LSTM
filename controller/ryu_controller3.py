@@ -22,7 +22,7 @@ SCALER_PATH = os.path.join(BASE, '../ml/model/scaler.pkl')
 LE_PATH     = os.path.join(BASE, '../ml/model/label_encoder.pkl')
 
 BLOCK_THRESHOLD  = 0.90
-BLOCK_DURATION   = 90
+# BLOCK_DURATION ถูกลบออก — block ถาวรจนกว่า Admin จะปลด
 STATS_INTERVAL   = 2
 DASH_URL         = 'http://localhost:5000'
 WARMUP_SECONDS   = 60
@@ -90,8 +90,6 @@ class IntelligentController(app_manager.RyuApp):
         self.prev_stats    = {}
         self.port_context  = {}
         self.port_ip_map   = {}   # port → last seen src IP
-        for hid, (hport, hmac, hip) in HOSTS.items():
-            self.port_ip_map[hport] = hip
         self.alert_counts  = {}   # port → consecutive hit count
         self.startup_time  = time.time()
 
@@ -379,9 +377,9 @@ class IntelligentController(app_manager.RyuApp):
         # บันทึกและแจ้งเตือน
         if HAS_NOTIFY: notify_attack(port, pps, conf)
         if HAS_DB:
-            db.log_attack(port, pps, bps/1024, conf, note=label,
+            db.log_attack(port, pps, bps/1024, conf, note=f'{label} src={src_ip}',
                           attack_type=label, dpid=dp.id)
-            db.block_port(port, conf, BLOCK_DURATION)
+            db.block_ip(src_ip, conf)   # log IP-based block (ไม่มี duration)
         
         dash('/api/attack', {
             'port': port, 
@@ -393,29 +391,32 @@ class IntelligentController(app_manager.RyuApp):
         self.alert_counts.pop(port, None)
 
     def _block_ip(self, dp, src_ip, port, conf, label=''):
-        """─── ACL: Block เฉพาะ IP ที่โจมตี (ไม่ block ทั้ง port) ───"""
+        """─── ACL: Block เฉพาะ IP ที่โจมตี (ถาวรจนกว่า Admin จะปลด) ───"""
         parser = dp.ofproto_parser
 
         if src_ip in WHITELIST_IPS:
             LOG.warning(f"⚠️  SKIP block — IP {src_ip} is whitelisted")
             return
 
-        # Drop rule: match by src IP only (priority 500 > static flows 200)
+        if src_ip in self.blocked_ips:
+            LOG.warning(f"⚠️  IP {src_ip} already blocked — skipping")
+            return
+
+        # Drop rule: match by src IP — permanent (ไม่มี timeout)
         match = parser.OFPMatch(eth_type=0x0800, ipv4_src=src_ip)
-        self._add_flow(dp, 500, match, [],
-                       idle_timeout=BLOCK_DURATION, hard_timeout=BLOCK_DURATION)
+        self._add_flow(dp, 500, match, [])   # idle_timeout=0, hard_timeout=0 → ถาวร
 
         # Drop rule สำหรับ LOCAL port path ด้วย
         match_local = parser.OFPMatch(
             eth_type=0x0800, in_port=LOCAL_PORT, ipv4_src=src_ip)
-        self._add_flow(dp, 501, match_local, [],
-                       idle_timeout=BLOCK_DURATION, hard_timeout=BLOCK_DURATION)
+        self._add_flow(dp, 501, match_local, [])   # ถาวรเช่นกัน
 
         self.blocked_ips[src_ip] = {
             'time': time.time(), 'dpid': dp.id,
             'port': port, 'label': label
         }
-        LOG.warning(f"🚫 ACL BLOCK IP {src_ip} (from port {port}) | Attack: {label} {conf:.2%}")
+        LOG.warning(f"🚫 ACL BLOCK IP {src_ip} (from port {port}) | {label} {conf:.2%}")
+        LOG.warning(f"   ⚠️  Block is PERMANENT — Admin must unblock manually")
 
     def _rate_limit_ip(self, dp, src_ip, port, conf):
         """─── ACL: Rate-limit เฉพาะ IP ───"""
@@ -423,13 +424,12 @@ class IntelligentController(app_manager.RyuApp):
         match = parser.OFPMatch(eth_type=0x0800, ipv4_src=src_ip)
         actions = [parser.OFPActionSetQueue(1),
                    parser.OFPActionOutput(dp.ofproto.OFPP_FLOOD)]
-        self._add_flow(dp, 490, match, actions,
-                       idle_timeout=BLOCK_DURATION, hard_timeout=BLOCK_DURATION)
+        self._add_flow(dp, 490, match, actions)   # ถาวรจนกว่า Admin จะปลด
         self.blocked_ips[src_ip] = {
             'time': time.time(), 'dpid': dp.id,
             'port': port, 'label': 'UDPLag'
         }
-        LOG.warning(f"🐌 ACL RATE-LIMIT IP {src_ip} (UDPLag)")
+        LOG.warning(f"🐌 ACL RATE-LIMIT IP {src_ip} (UDPLag) — permanent until admin unblocks")
 
     def _unblock_ip(self, src_ip, reason='expired'):
         """─── ACL: Unblock IP ───"""
@@ -459,13 +459,8 @@ class IntelligentController(app_manager.RyuApp):
         LOG.info(f"✅ ACL Unblocked IP {src_ip} (port {port}, {reason})")
 
     def _is_ip_blocked(self, src_ip):
-        """เช็คว่า IP ถูก block อยู่หรือไม่"""
-        if src_ip in self.blocked_ips:
-            if time.time() - self.blocked_ips[src_ip]['time'] >= BLOCK_DURATION:
-                self._unblock_ip(src_ip)
-                return False
-            return True
-        return False
+        """เช็คว่า IP ถูก block อยู่หรือไม่ — block ถาวร ไม่มีการ unblock อัตโนมัติ"""
+        return src_ip in self.blocked_ips
 
     def _warmup_done(self):
         return (time.time() - self.startup_time) >= WARMUP_SECONDS
@@ -516,31 +511,35 @@ class IntelligentController(app_manager.RyuApp):
             hub.sleep(STATS_INTERVAL)
 
     def _unblock_loop(self):
-        """ตรวจ blocked IPs ที่หมดเวลา และรับคำสั่ง unblock จากแอดมิน (IPC)"""
+        """Loop นี้คงไว้เพื่อ backward compat — ไม่ทำอะไรเพราะ block เป็นแบบถาวร
+        การ unblock ต้องทำผ่าน Admin API เท่านั้น (POST /api/unblock)"""
         while True:
-            # 1. เช็ค IP หมดเวลาบล็อกปกติ
-            for ip in list(self.blocked_ips):
-                self._is_ip_blocked(ip)
+            hub.sleep(60)   # sleep นาน ไม่ต้องทำอะไร
 
-            # 2. เช็คสัญญาณ unblock จาก Flask API
-            ipc_path = '/tmp/unblock_requests.txt'
-            if os.path.exists(ipc_path):
-                try:
-                    with open(ipc_path, 'r') as f:
-                        ips = [line.strip() for line in f if line.strip()]
-                    
-                    # ลบไฟล์ทิ้งหลังอ่านแล้ว
-                    if os.path.exists(ipc_path):
-                        os.remove(ipc_path)
+    # ─────────────────────────────────────────────────────────────────
+    # Admin API: ปลด block โดย Admin เท่านั้น
+    # เรียกจาก Dashboard: POST /api/unblock  {"ip": "x.x.x.x"}
+    # ─────────────────────────────────────────────────────────────────
+    def admin_unblock_ip(self, src_ip):
+        """ปลด block IP — เรียกจาก Dashboard/Admin เท่านั้น"""
+        if src_ip not in self.blocked_ips:
+            LOG.warning(f"⚠️  Admin unblock: IP {src_ip} not in blocked list")
+            return False
+        self._unblock_ip(src_ip, reason='admin')
+        return True
 
-                    for ip in ips:
-                        if ip in self.blocked_ips:
-                            LOG.info(f"📬 IPC: Admin requested unblock for IP {ip}")
-                            self._unblock_ip(ip, reason='admin')
-                except Exception as e:
-                    LOG.error(f"❌ Error processing unblock IPC: {e}")
-
-            hub.sleep(2)
+    def admin_list_blocked(self):
+        """รายการ IP ที่ถูก block ทั้งหมด"""
+        result = []
+        for ip, info in self.blocked_ips.items():
+            result.append({
+                'ip': ip,
+                'port': info.get('port'),
+                'label': info.get('label'),
+                'blocked_at': time.strftime('%Y-%m-%d %H:%M:%S',
+                              time.localtime(info['time']))
+            })
+        return result
 
     def _add_flow(self, dp, priority, match, actions, idle_timeout=0, hard_timeout=0):
         ofp, parser = dp.ofproto, dp.ofproto_parser
