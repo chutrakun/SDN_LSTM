@@ -1,0 +1,30 @@
+{
+  "verified_at": "2026-09-07T20:58:00+07:00",
+  "result": "PASS",
+  "python_version_target": "3.8",
+  "python_compile": "PASS",
+  "ast_parse": "PASS (5 files)",
+  "shell_syntax": "PASS",
+  "frontend_build": "PASS",
+  "focused_changed_file_diff_check": "PASS",
+  "preexisting_diff_check_note": "controller/ryu_controller.py contains pre-existing trailing whitespace in the dirty worktree; its source SHA-256 matches the overnight baseline exactly.",
+  "baseline_source_hashes_unchanged": {
+    "dashboard_api.py": true,
+    "topology/network_topology.py": true,
+    "controller/ryu_controller.py": true
+  },
+  "sensitive_files_newer_than_baseline": [],
+  "verified_untouched": [
+    "BFS",
+    "spanning-tree flooding",
+    "ML inference",
+    "mitigation",
+    "thresholds",
+    "recorder feature semantics",
+    "Phase 2H data/artifacts",
+    "model/scaler files"
+  ],
+  "phase_2i_performed": false,
+  "ml_training_performed": false,
+  "dos_ddos_test_performed": false
+}

@@ -1,0 +1,41 @@
+{
+  "controller_protected_ast_sha256": {
+    "_get_flood_ports": "7944a9a336547e4469b1c16c1aa29b205f2413b7a013fec6f451dba21f76fd33",
+    "_get_next_hop": "ab4cb9801af8a0a7868567faca45e1478d64bc536dc274ef11b5bc5419ef692d",
+    "_get_spanning_tree_edges": "bdd267e8d6bb24024755a987b4cc0fc70ea8d15cc1ea139ca6706e6f46eeb6f3",
+    "_lstm_check": "31fb90c2ada07e40ffabfd805d4a406413c3fa4115af4cc5c4ec64907a5f5bd3",
+    "_take_action": "cca150a46776d3e6609b61aed6c15ddf69c4ff4e427ef5b2f81ed5d4722e646f",
+    "packet_in_handler": "848a74df831dec4990ee73656854afd2a0df1a2056b261a671e9a1ff2b6180a8"
+  },
+  "controller_threshold_constants": {
+    "BLOCK_THRESHOLD": 0.9,
+    "FALLBACK_BPS_THRESHOLD": 1000000,
+    "FALLBACK_PPS_THRESHOLD": 1000,
+    "MIN_PPS_CHECK": 500
+  },
+  "dataset_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/sdn_pilot_multirun_v1.csv",
+  "file_sha256": {
+    "collector/sdn_window_recorder.py": "414fa028a7cb35a8173dd2daf0f34eaaf7be98fb7f1bd08de1f623926edfb1b9",
+    "controller/ryu_controller.py": "9a17008c713e64a058c80f3d0c79eb7c78b8479609998fd4cb178196c60da28a",
+    "experiments/traffic_experiment_driver.py": "09b6b1e1685a0d2383768cc87de5f1b79fc484398380f19e156f26733347ea16",
+    "topology/network_topology.py": "69a8d7d4b509cb39f73993490891e4c9506e672cd9654ed23b1984dc99ae5c62"
+  },
+  "git_status": [
+    " M controller/__pycache__/ryu_controller.cpython-38.pyc",
+    " M controller/ryu_controller.py",
+    " M dashboard_api.py",
+    " M frontend/src/components/Dashboard.jsx",
+    " M frontend/src/components/Navbar.jsx",
+    " M frontend/src/styles/index.css",
+    " M ryu_watchdog.sh",
+    " M topology/network_topology.py",
+    "?? collector/SDN_WINDOW_DATASET.md",
+    "?? collector/sdn_window_recorder.py",
+    "?? controller/SNC-EB630B.pdf",
+    "?? experiments/",
+    "?? unblock_requests.txt"
+  ],
+  "recorded_at_epoch": 1788717408.599493,
+  "state_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_state.json",
+  "status_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_status.json"
+}

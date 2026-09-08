@@ -1,0 +1,14 @@
+{
+  "verified_at": "2026-09-07T20:55:00+07:00",
+  "result": "PASS",
+  "mn_cleanup_used_during_live_changes": false,
+  "killall_present_in_active_manager": false,
+  "broad_pkill_present_in_active_manager": false,
+  "topology_pid_handling": "PID file is accepted only when /proc/PID/cmdline contains the absolute project topology script; discovery candidates receive the same check.",
+  "host_process_handling": "Only exact mininet shell PIDs proven by process ancestry beneath verified project topology PIDs are signaled.",
+  "bridge_handling": "Only supported s1-s4 bridge IDs are considered, and deletion requires controller tcp:127.0.0.1:6653 plus bridge-prefixed port names; uncertain ownership raises an error and fails closed.",
+  "interface_handling": "Only switch-side interfaces belonging to bridges already verified and removed as project bridges are considered; no all-interface deletion.",
+  "stale_pid_handling": "A stale/reused PID with a mismatching command is ignored.",
+  "signal_policy": "SIGTERM first; exact verified topology PID SIGKILL only after an 8-second wait.",
+  "launcher_shutdown": "Recorded backend/Ryu/frontend/topology PIDs are command-checked (and frontend cwd-checked) before SIGTERM; routine cleanup does not call mn -c."
+}

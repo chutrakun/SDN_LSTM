@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-09-07T18:59:21+07:00",
+  "branch": "main",
+  "git_status_short": [
+    " M __pycache__/dashboard_api.cpython-310.pyc",
+    " M controller/__pycache__/ryu_controller.cpython-38.pyc",
+    " M controller/ryu_controller.py",
+    " M dashboard_api.py",
+    " M frontend/src/App.jsx",
+    " M frontend/src/components/Dashboard.jsx",
+    " M frontend/src/components/Navbar.jsx",
+    " M frontend/src/components/TopologySelector.jsx",
+    " M frontend/src/components/TopologyView.jsx",
+    " M frontend/src/pages/TopologySettingsPage.jsx",
+    " M frontend/src/styles/index.css",
+    " M ryu_watchdog.sh",
+    " M topology/network_topology.py",
+    "?? DEMO_RUNBOOK.md",
+    "?? collector/SDN_WINDOW_DATASET.md",
+    "?? collector/__pycache__/",
+    "?? collector/sdn_window_recorder.py",
+    "?? config/",
+    "?? controller/SNC-EB630B.pdf",
+    "?? data/pilot/",
+    "?? experiments/",
+    "?? scripts/",
+    "?? topology/__pycache__/",
+    "?? topology/topology_config.py",
+    "?? topology/topology_manager.py",
+    "?? unblock_requests.txt"
+  ],
+  "sha256": {
+    "dashboard_api.py": "0456fcfd6a741d40fb0c134521a569eade339ad1befc9ae770c810b1e088e850",
+    "topology/topology_manager.py": "bc6d4d88622225456c0b13055d9a3efb09536c4ecece2580c62b8247713fe8a8",
+    "topology/network_topology.py": "ca9e0a36d5c57fbf73bf0a8506fbbca2ae1f78c57c256d59d58e59febe095577",
+    "controller/ryu_controller.py": "cf3c3a874d5d891a6fea0631b1f46b81470e040777d9c8bc214425447cd0114a",
+    "frontend/src/App.jsx": "3b19cb75bc79bc27a1b8a2c78d71ad7db5dabce7a6f04b0ab6ad9de00783929d",
+    "frontend/src/components/Dashboard.jsx": "01126a776ee840de8c30826a8c52ff2f7a118b8c326d4148a2ba6733620528f2",
+    "frontend/src/components/Navbar.jsx": "8bd6b340153be5eb27b27ca444eafc00c8983a6ac210df2a8fb725deeb2e95a7",
+    "frontend/src/components/TopologySelector.jsx": "d6b858587cf3c5044367199839b03932eec5b58f451a686d3baf9441379d3343",
+    "frontend/src/components/TopologyView.jsx": "9209f3aac2468db941f7ec4851de598936ebf8b11c30a6e49f7ffcbe65695fcf",
+    "frontend/src/pages/1/TopologySettingsPage.jsx": "41b99e960c23f506039d50ecdefbef642036e2a4768352800429550a6a8af7b0",
+    "frontend/src/pages/DashboardPage.jsx": "5bf544c3be55adccf607d868c69075feee7c2c3a684664ecbe8ca88bf4ea6fa1",
+    "frontend/src/pages/TopologySettingsPage.jsx": "d1161d11afd7e694e313481ea47d5d042eb4955e01669d344a14a7364817c591",
+    "config/current_topology.json": "56b5aaa396edbe0aa9b2929c529d17429003eed4a1a8ea05270488917ea91c86"
+  },
+  "ports": {
+    "5000": {"listening": false, "pid": null},
+    "6653": {"listening": false, "pid": null}
+  },
+  "processes": {
+    "backend": [],
+    "ryu": [],
+    "topology_mininet": []
+  },
+  "topology_pid_file": null,
+  "ovs_bridges": ["s1", "s2", "s3", "s4"],
+  "ovs_state": "stale bridge records: every non-local s1-s4 interface reports no such device; no project data-plane interfaces or Mininet host processes exist",
+  "persistent_config": {
+    "version": "sdn_topology_config_v1",
+    "topology": "full_mesh",
+    "updated_at": "2026-09-06T19:15:54.458156+00:00",
+    "switches": 4,
+    "physical_links": 6,
+    "directed_links": 12
+  },
+  "api_topology": {"reachable": false, "http_code": 0},
+  "runtime_assessment": {
+    "selected_topology": "full_mesh",
+    "runtime_topology": null,
+    "backend_status": "stopped",
+    "switches": 0,
+    "directed_links": 0,
+    "in_sync": false
+  }
+}

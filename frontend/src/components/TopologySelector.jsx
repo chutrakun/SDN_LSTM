@@ -1,6 +1,6 @@
 // import React, { useState, useEffect, useRef } from 'react';
 
-// const API_BASE = 'http://localhost:5000';
+// const API_BASE = '';
 
 // const STEPS = [
 //   { label: 'Stop existing Mininet' },
@@ -146,13 +146,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = '';
 
 const STEPS = [
   { label: 'Stop existing Mininet' },
-  { label: 'Clear OVS + wait for Ryu restart' },
-  { label: 'Launch new Mininet' },
-  { label: 'Connection established' },
+  { label: 'Clean stale Mininet state' },
+  { label: 'Launch persisted topology' },
+  { label: 'Ryu topology verified' },
 ];
 
 // ─── SVG Topology Diagrams ───
@@ -205,7 +205,7 @@ const MeshDiagram = ({ active }) => (
 
 const TOPOLOGY_OPTIONS = [
   {
-    id: 'default',
+    id: 'star',
     name: 'Star',
     description: 'Single central switch connecting all hosts — minimal latency, single point of failure.',
     switches: 1,
@@ -221,8 +221,8 @@ const TOPOLOGY_OPTIONS = [
     Diagram: TreeDiagram,
   },
   {
-    id: 'mesh',
-    name: 'Mesh',
+    id: 'full_mesh',
+    name: 'Full Mesh',
     description: 'Fully-connected switches offering redundant paths and high fault tolerance.',
     switches: 4,
     hosts: 4,
@@ -247,12 +247,7 @@ const ConfirmModal = ({ topoName, onConfirm, onCancel }) => (
         Deploy {topoName} topology?
       </div>
       <div style={{ fontSize: '12px', color: 'var(--muted, #7d8590)', lineHeight: '1.7', marginBottom: '22px' }}>
-        This will modify{' '}
-        <code style={{
-          fontSize: '11px', background: 'var(--bg3, #21262d)',
-          padding: '1px 5px', borderRadius: '4px',
-        }}>network_topology.py</code>{' '}
-        and restart Mininet and the Ryu controller. The process takes 10–20 seconds.
+        The backend will persist this selection, restart Mininet, and wait for Ryu to verify the expected switch and link graph.
       </div>
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
         <button onClick={onCancel} style={{
@@ -331,56 +326,57 @@ const StepProgress = ({ stepIdx, isDone }) => (
 
 // ─── Main Component ───
 const TopologySelector = ({ topologyType, setTopologyType }) => {
-  const [pending,   setPending]   = useState(topologyType);
-  const [uiState,   setUiState]   = useState('idle');
-  const [srvState,  setSrvState]  = useState({ state: 'idle', message: '' });
-  const [stepIdx,   setStepIdx]   = useState(0);
+  const [pending, setPending] = useState(topologyType || 'full_mesh');
+  const [uiState, setUiState] = useState('offline');
+  const [srvState, setSrvState] = useState({ status: 'offline', message: 'Loading backend topology state…' });
+  const [stepIdx, setStepIdx] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [progress,  setProgress]  = useState(0);
-  const pollRef    = useRef(null);
-  const progressRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const hydratedFromBackend = useRef(false);
+  const selectionChangedByUser = useRef(false);
 
-  const stopPoll = () => {
-    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
-  };
-  const stopProgress = () => {
-    if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = null; }
-  };
-
-  const startProgressBar = () => {
-    setProgress(0);
-    stopProgress();
-    progressRef.current = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 90) { stopProgress(); return prev; }
-        return prev + Math.random() * 8;
-      });
-    }, 800);
-  };
-
-  const startPoll = () => {
-    stopPoll();
-    let idx = 0;
-    pollRef.current = setInterval(async () => {
+  useEffect(() => {
+    let mounted = true;
+    const refresh = async () => {
       try {
-        const res  = await fetch(`${API_BASE}/api/topology/status`);
-        const data = await res.json();
+        const response = await fetch(`${API_BASE}/api/topology`);
+        const data = await response.json();
+        if (!mounted) return;
+        if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
         setSrvState(data);
-        if (data.state === 'restarting') { idx = Math.min(idx + 1, 2); setStepIdx(idx); }
-        if (data.state === 'ready') {
-          setStepIdx(3);
-          setUiState('done');
-          setTopologyType(data.topology);
-          stopPoll();
-          stopProgress();
-          setProgress(100);
+        if (!hydratedFromBackend.current && data.selected_topology) {
+          hydratedFromBackend.current = true;
+          setPending(data.selected_topology);
+          setTopologyType(data.selected_topology);
         }
-        if (data.state === 'error') { setUiState('error'); stopPoll(); stopProgress(); }
-      } catch { /* network blip during restart */ }
-    }, 1500);
-  };
-
-  useEffect(() => () => { stopPoll(); stopProgress(); }, []);
+        if ((data.status === 'ready' || data.status === 'running') && data.in_sync) {
+          setUiState('done');
+          setStepIdx(3);
+          setProgress(100);
+          if (!selectionChangedByUser.current) {
+            setPending(data.selected_topology);
+          }
+          setTopologyType(data.runtime_topology);
+        } else if (data.status === 'changing') {
+          setUiState('applying');
+          setStepIdx(data.mininet_running ? 2 : 1);
+          setProgress(data.mininet_running ? 75 : 40);
+        } else if (data.status === 'error') {
+          setUiState('error');
+        } else {
+          setUiState('offline');
+          setProgress(0);
+        }
+      } catch (error) {
+        if (!mounted) return;
+        setUiState('offline');
+        setSrvState({ status: 'offline', message: `Backend offline: ${error.message}` });
+      }
+    };
+    refresh();
+    const timer = setInterval(refresh, 1500);
+    return () => { mounted = false; clearInterval(timer); };
+  }, [setTopologyType]);
 
   const handleDeployClick = () => {
     if (uiState === 'applying') return;
@@ -391,34 +387,32 @@ const TopologySelector = ({ topologyType, setTopologyType }) => {
     setShowModal(false);
     setUiState('applying');
     setStepIdx(0);
-    setSrvState({ state: 'restarting', message: 'Sending command…' });
-    startProgressBar();
-
+    setProgress(20);
+    setSrvState(previous => ({ ...previous, status: 'changing', message: 'Persisting selection…' }));
     try {
-      const res  = await fetch(`${API_BASE}/api/topology/apply`, {
+      const response = await fetch(`${API_BASE}/api/topology`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topology: pending }),
       });
-      const data = await res.json();
-      if (!data.ok) {
-        setUiState('error');
-        setSrvState({ state: 'error', message: data.error });
-        stopProgress();
-        return;
-      }
-      startPoll();
-    } catch (err) {
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      selectionChangedByUser.current = false;
+      setSrvState(data);
+      setStepIdx(1);
+      setProgress(40);
+    } catch (error) {
       setUiState('error');
-      setSrvState({ state: 'error', message: `Cannot connect to API: ${err.message}` });
-      stopProgress();
+      setSrvState(previous => ({ ...previous, status: 'error', message: error.message }));
     }
   };
 
   const isApplying = uiState === 'applying';
-  const isDone     = uiState === 'done';
-  const isError    = uiState === 'error';
-  const deployDisabled = isApplying || (pending === topologyType && isDone);
+  const isDone = uiState === 'done';
+  const isError = uiState === 'error';
+  const isOffline = uiState === 'offline';
+  const selectedTopology = srvState.selected_topology || topologyType;
+  const deployDisabled = isApplying || (pending === selectedTopology && isDone);
 
   return (
     <>
@@ -479,6 +473,19 @@ const TopologySelector = ({ topologyType, setTopologyType }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
+        <div style={{
+          background: 'var(--bg2, #161b22)', border: '1px solid var(--border, #30363d)',
+          borderRadius: '8px', padding: '12px 14px', fontSize: '12px', lineHeight: '1.7',
+        }}>
+          <strong>Status: </strong>{isDone ? 'Ready' : isApplying ? 'Changing' : isError ? 'Error' : 'Offline'}
+          <span style={{ color: 'var(--muted, #7d8590)' }}>
+            {' '}· selected {srvState.selected_topology || 'unknown'}
+            {' '}· runtime {srvState.runtime_topology || 'unknown'}
+            {' '}· {srvState.switches ?? 0} switches / {srvState.directed_links ?? 0} directed links
+          </span>
+          {srvState.message && <div style={{ color: 'var(--muted, #7d8590)' }}>{srvState.message}</div>}
+        </div>
+
         {/* ── Topology Cards ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
           {TOPOLOGY_OPTIONS.map((opt) => {
@@ -487,10 +494,16 @@ const TopologySelector = ({ topologyType, setTopologyType }) => {
               <div
                 key={opt.id}
                 className={`topo-card-new${isActive ? ' active' : ''}${isApplying ? ' disabled' : ''}`}
-                onClick={() => { if (!isApplying) { setPending(opt.id); if (!isDone) setUiState('idle'); } }}
+                onClick={() => {
+                  if (!isApplying) {
+                    selectionChangedByUser.current = opt.id !== selectedTopology;
+                    setPending(opt.id);
+                    if (!isDone) setUiState('idle');
+                  }
+                }}
               >
                 {/* Active badge */}
-                {opt.id === topologyType && (
+                {opt.id === selectedTopology && (
                   <span style={{
                     position: 'absolute', top: '10px', right: '10px',
                     fontSize: '9px', fontWeight: 700, letterSpacing: '0.8px',
@@ -568,7 +581,7 @@ const TopologySelector = ({ topologyType, setTopologyType }) => {
                     : `Deploying ${TOPOLOGY_OPTIONS.find(o => o.id === pending)?.name} topology…`}
                 </strong>
                 {!isDone && (
-                  <span style={{ color: 'var(--muted, #7d8590)' }}> — restarting Mininet and Ryu controller</span>
+                  <span style={{ color: 'var(--muted, #7d8590)' }}> — waiting for Ryu topology verification</span>
                 )}
               </div>
               <div style={{
@@ -607,7 +620,7 @@ const TopologySelector = ({ topologyType, setTopologyType }) => {
           </div>
         )}
 
-        {isError && (
+        {(isError || isOffline) && (
           <button
             className="deploy-btn-new"
             style={{ background: 'var(--bg3, #21262d)', color: 'var(--text, #e6edf3)', border: '1px solid var(--border, #30363d)' }}

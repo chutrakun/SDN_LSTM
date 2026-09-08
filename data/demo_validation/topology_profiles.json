@@ -1,0 +1,101 @@
+{
+  "verified_at": "2026-09-07T20:53:00+07:00",
+  "source": "topology/topology_config.py",
+  "profiles": {
+    "star": {
+      "switches": 1,
+      "physical_links": 0,
+      "directed_links": 0,
+      "directed_edges": []
+    },
+    "tree": {
+      "switches": 3,
+      "physical_links": 2,
+      "directed_links": 4,
+      "directed_edges": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    "full_mesh": {
+      "switches": 4,
+      "physical_links": 6,
+      "directed_links": 12,
+      "directed_edges": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ]
+      ]
+    }
+  },
+  "runtime_classifier_test": "PASS",
+  "invalid_id_test": {
+    "http_status": 400,
+    "config_unchanged": true
+  },
+  "dataset_collection_gate": {
+    "switches": 4,
+    "directed_links": 12,
+    "unchanged": true,
+    "separate_from_general_readiness": true
+  }
+}

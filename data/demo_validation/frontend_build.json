@@ -1,0 +1,16 @@
+{
+  "built_at": "2026-09-07T20:58:00+07:00",
+  "result": "PASS",
+  "node_version": "v24.15.0",
+  "npm_version": "11.12.1",
+  "command": "npm run build",
+  "vite_version": "8.0.10",
+  "modules_transformed": 1744,
+  "warnings": [],
+  "outputs": {
+    "dist/index.html_kib": 0.45,
+    "css_kib": 11.81,
+    "javascript_kib": 482.94
+  },
+  "final_rebuild_after_readiness_synonym": "PASS"
+}

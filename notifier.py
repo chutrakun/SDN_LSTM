@@ -14,6 +14,34 @@ EMAIL_SENDER   = ""
 EMAIL_PASSWORD = ""
 EMAIL_RECEIVER = ""
 
+DEFAULT_MODEL_LABEL = "LSTM"
+
+
+def _active_model_label():
+    """Return a display label for the model the controller will load."""
+    try:
+        import os
+        import db_manager as db
+
+        active_model = db.get_active_model()
+        if not active_model:
+            return DEFAULT_MODEL_LABEL
+
+        name = str(active_model.get('name') or '').strip()
+        file_path = str(active_model.get('file_path') or '').strip()
+        identity = f"{name} {os.path.basename(file_path)}".lower()
+        if 'lstm' in identity:
+            return 'LSTM'
+        if (
+            'random forest' in identity
+            or 'random_forest' in identity
+            or 'randomforest' in identity
+        ):
+            return 'Random Forest'
+        return name or os.path.basename(file_path) or DEFAULT_MODEL_LABEL
+    except Exception:
+        return DEFAULT_MODEL_LABEL
+
 def send_telegram(message: str):
     """ส่งแจ้งเตือนผ่าน Telegram Bot API"""
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
@@ -83,15 +111,16 @@ def notify_unblock(port: int, reason: str):
     )
     threading.Thread(target=send_telegram, args=(msg,), daemon=True).start()
 
-def notify_system_start():
+def notify_system_start(model_name=None):
     """แจ้งเมื่อระบบเริ่มต้น"""
     ts  = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    model_label = model_name or _active_model_label()
     msg = (
         f"🟢 <b>SDN Security System</b>\n"
         f"━━━━━━━━━━━━━━━\n"
         f"🕐 เวลา: {ts}\n"
         f"✅ ระบบเริ่มทำงานแล้ว\n"
-        f"🤖 ML Model: Random Forest\n"
+        f"🤖 ML Model: {model_label}\n"
         f"🌐 Dashboard: http://localhost:5000"
     )
     threading.Thread(target=send_telegram, args=(msg,), daemon=True).start()

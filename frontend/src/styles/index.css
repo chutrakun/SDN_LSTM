@@ -64,10 +64,42 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   transition: background-color 0.4s ease, color 0.4s ease;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── NOC glass background (light mode only) ── */
+.light-mode body {
+  background:
+    radial-gradient(1200px 500px at 12% -10%, rgba(26,127,255,.06), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(122,80,224,.05), transparent 55%),
+    linear-gradient(180deg, #eef3f9 0%, #e9eff6 100%);
+}
+
+/* ── Category accent border-top for cards ──
+   Set `style={{ '--accent': 'var(--blue)' }}` (etc) on a .card / .stat-card / .model-card
+   to tag it with a category color. No-op unless --accent is set. Light mode only —
+   dark mode keeps its original flat border look. */
+.light-mode .stat-card,
+.light-mode .card,
+.light-mode .model-card {
+  border-top: 3px solid var(--accent, var(--border));
+  box-shadow: 0 1px 2px rgba(15, 30, 55, .04), 0 6px 20px rgba(15, 30, 55, .05);
+  transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
+}
+
+.light-mode .stat-card:hover,
+.light-mode .card:hover {
+  box-shadow: 0 2px 4px rgba(15, 30, 55, .06), 0 12px 28px rgba(15, 30, 55, .09);
+  transform: translateY(-1px);
+}
+
+.light-mode .stat-card .stat-glow { opacity: .16; }
+
+.light-mode .model-card.active {
+  border-top-color: var(--green);
 }
 
 /* ── Noise overlay ── */
@@ -97,18 +129,19 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 54px;
+  min-height: 60px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .light-mode .navbar {
-  background: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.85);
+  box-shadow: 0 1px 0 rgba(15,30,55,.04), 0 4px 16px rgba(15,30,55,.04);
 }
 
 .navbar-brand {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -132,7 +165,7 @@ body::before {
 .nav-link {
   color: var(--muted);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   height: 100%;
   display: flex;
@@ -151,7 +184,7 @@ body::before {
 }
 
 /* ── Page ── */
-.page-container { padding-bottom: 48px; min-height: calc(100vh - 54px); }
+.page-container { padding-bottom: 48px; min-height: calc(100vh - 60px); }
 
 /* ── Header bar ── */
 .header {
@@ -165,7 +198,7 @@ body::before {
 }
 
 .header h1 {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   letter-spacing: .3px;
   color: var(--text);
@@ -188,7 +221,7 @@ body::before {
 
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
 
-.header-right { margin-left: auto; color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
+.header-right { margin-left: auto; color: var(--muted); font-size: 13px; font-family: var(--font-mono); }
 
 /* ── Stats row ── */
 .stats-row {
@@ -231,7 +264,7 @@ body::before {
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -240,7 +273,7 @@ body::before {
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 700;
   margin-top: 8px;
   line-height: 1;
@@ -249,7 +282,7 @@ body::before {
 }
 
 .stat-sub {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-top: 6px;
 }
@@ -276,7 +309,7 @@ body::before {
 }
 
 .card-title {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -319,7 +352,7 @@ body::before {
 
 .ip-addr {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--red);
   flex: 1;
 }
@@ -328,7 +361,7 @@ body::before {
 
 /* ── Badges ── */
 .badge {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 20px;
@@ -353,7 +386,7 @@ body::before {
   padding: 8px 12px;
   border-radius: 7px;
   background: var(--bg3);
-  font-size: 12px;
+  font-size: 13px;
   transition: background 0.2s;
   border-left: 2px solid transparent;
 }
@@ -361,17 +394,17 @@ body::before {
 .log-row:hover { background: var(--bg4); }
 .log-row.threat { border-left-color: var(--red); }
 
-.log-time { color: var(--muted); min-width: 58px; font-family: var(--font-mono); font-size: 11px; }
+.log-time { color: var(--muted); min-width: 68px; font-family: var(--font-mono); font-size: 12px; }
 .log-msg { flex: 1; color: var(--text2); }
 .log-msg strong { color: var(--text); }
-.log-conf { font-family: var(--font-mono); font-weight: 700; font-size: 12px; }
+.log-conf { font-family: var(--font-mono); font-weight: 700; font-size: 13px; }
 
 /* ── ML meters ── */
 .meter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.meter-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.meter-label { font-size: 13px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
 .meter-bar-bg { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
 .meter-bar { height: 100%; border-radius: 3px; transition: width .7s cubic-bezier(.4,0,.2,1), background .4s; }
-.meter-val { font-size: 13px; font-weight: 700; margin-top: 5px; font-family: var(--font-mono); }
+.meter-val { font-size: 14px; font-weight: 700; margin-top: 5px; font-family: var(--font-mono); }
 
 /* ── Unblock button ── */
 .unblock-btn {
@@ -382,7 +415,7 @@ body::before {
   background: transparent;
   color: var(--green);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: .3px;
   transition: all 0.2s;
@@ -393,7 +426,7 @@ body::before {
 /* ── Empty state ── */
 .empty {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   padding: 24px 0;
   font-style: italic;
@@ -449,14 +482,14 @@ body::before {
 .topo-option.disabled { opacity: .5; cursor: not-allowed; }
 
 .topo-icon { font-size: 30px; line-height: 1; }
-.topo-name { font-weight: 600; font-size: 14px; color: var(--text); }
-.topo-desc { font-size: 11px; color: var(--muted); }
+.topo-name { font-weight: 600; font-size: 16px; color: var(--text); }
+.topo-desc { font-size: 13px; color: var(--muted); }
 
 .deploy-btn {
   width: 100%;
   padding: 13px 24px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   border: none;
   border-radius: var(--radius);
   background: var(--blue);
@@ -481,7 +514,7 @@ body::before {
 
 /* ── Step progress ── */
 .step-list { display: flex; flex-direction: column; gap: 10px; }
-.step-item { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.step-item { display: flex; align-items: center; gap: 12px; font-size: 14px; }
 .step-icon { font-size: 15px; flex-shrink: 0; }
 .step-label { color: var(--muted); }
 .step-label.done { color: var(--green); }
@@ -491,7 +524,7 @@ body::before {
 .status-banner {
   padding: 12px 16px;
   border-radius: var(--radius);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
   border-left: 3px solid var(--amber);
   background: var(--bg3);
@@ -507,7 +540,7 @@ body::before {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-  font-size: 13px;
+  font-size: 15px;
   font-family: var(--font-body);
   outline: none;
   transition: border-color 0.2s;
@@ -521,7 +554,7 @@ body::before {
 .form-label {
   display: block;
   margin-bottom: 6px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text2);
   letter-spacing: .3px;
@@ -559,7 +592,7 @@ body::before {
   color: var(--blue);
   border-radius: var(--radius);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
@@ -574,14 +607,14 @@ body::before {
   background: var(--amber-dim);
   border-left: 3px solid var(--amber);
   border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
   line-height: 1.6;
 }
 
 /* ── Section heading ── */
 .section-title {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -.4px;
@@ -589,7 +622,7 @@ body::before {
 
 .section-sub {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   margin-top: 4px;
   line-height: 1.5;
 }
@@ -606,7 +639,9 @@ body::before {
   .grid { grid-template-columns: 1fr; }
   .col-2, .col-3 { grid-column: span 1; }
   .stats-row { grid-template-columns: 1fr 1fr; }
-  .navbar { padding: 0 16px; gap: 16px; }
+  .navbar { padding: 0 16px; gap: 16px; overflow-x: auto; }
+  .navbar-brand { font-size: 14px; }
+  .nav-link { font-size: 14px; }
   .grid { padding: 14px 16px; }
   .stats-row { padding: 14px 16px 0; }
   .header { padding: 12px 16px; }

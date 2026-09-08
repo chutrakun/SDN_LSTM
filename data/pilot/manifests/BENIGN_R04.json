@@ -1,0 +1,47 @@
+{
+  "active_end_epoch": 1788717919.6977012,
+  "active_end_timestamp": "2026-09-06T18:05:19.697701Z",
+  "active_start_epoch": 1788717859.6977012,
+  "active_start_timestamp": "2026-09-06T18:04:19.697701Z",
+  "attack_source_host": "none",
+  "completed_at": "2026-09-06T18:05:24.785612Z",
+  "cooldown_end_epoch": 1788717924.6977012,
+  "cooldown_end_timestamp": "2026-09-06T18:05:24.697701Z",
+  "cooldown_seconds": 5.0,
+  "dataset_path": "data/pilot/sdn_pilot_multirun_v1.csv",
+  "duration_seconds": 60.0,
+  "exact_command": "/usr/bin/bash -c 'while true; do /usr/bin/ping -c 1 -W 1 10.0.0.100 >/dev/null 2>&1; /usr/bin/curl -fsS --max-time 2 -o /dev/null http://10.0.0.100/; sleep 1.0; done'",
+  "experiment_id": "BENIGN_R04",
+  "namespace_command": "/usr/local/bin/mnexec -a 341469 /usr/bin/bash -c 'while true; do /usr/bin/ping -c 1 -W 1 10.0.0.100 >/dev/null 2>&1; /usr/bin/curl -fsS --max-time 2 -o /dev/null http://10.0.0.100/; sleep 1.0; done'",
+  "ovs_bridges": [
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+  ],
+  "parameters": {
+    "cycle_interval_seconds": 1.0,
+    "http_requests_per_cycle": 1,
+    "icmp_packets_per_cycle": 1
+  },
+  "scenario_label": "BENIGN",
+  "start_epoch": 1788717853.6977012,
+  "start_timestamp": "2026-09-06T18:04:13.697701Z",
+  "state_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_state.json",
+  "status": "COMPLETE",
+  "status_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_status.json",
+  "target": "h_server (10.0.0.100)",
+  "target_host": "h_server",
+  "target_ip": "10.0.0.100",
+  "topology_readiness": {
+    "datapaths": 4,
+    "directed_links": 12,
+    "ready": true,
+    "stable_seconds": 418.53426162199685,
+    "updated_at": 1788717853.042355,
+    "version": "sdn_dataset_status_v1"
+  },
+  "traffic_source_host": "h1",
+  "version": "sdn_traffic_experiment_v1",
+  "warmup_seconds": 5.0
+}

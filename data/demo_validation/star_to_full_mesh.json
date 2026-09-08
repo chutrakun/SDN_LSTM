@@ -1,0 +1,39 @@
+{
+  "test": "star_to_full_mesh",
+  "started_at": "2026-09-07T20:44:34+07:00",
+  "completed_at": "2026-09-07T20:45:02+07:00",
+  "result": "PASS",
+  "api_request": {
+    "method": "POST",
+    "path": "/api/topology",
+    "body": {
+      "topology": "full_mesh"
+    }
+  },
+  "ryu_pid_before": 60952,
+  "ryu_pid_after": 60952,
+  "ryu_pid_unchanged": true,
+  "topology_pid_before": 59707,
+  "topology_pid_after": 61841,
+  "config_sha256_after": "cca5227b3246b288be26159e62c2076d263db363db81f16308c2c33e53633f6d",
+  "runtime": {
+    "selected_topology": "full_mesh",
+    "runtime_topology": "full_mesh",
+    "switches": 4,
+    "directed_links": 12,
+    "stable_seconds": 26.995003019999785,
+    "status": "ready",
+    "in_sync": true,
+    "ovs_bridges": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ]
+  },
+  "connectivity": {
+    "pingall_loss_percent": 0.0,
+    "h1_to_h_server_ping_loss_percent": 0.0,
+    "h1_to_h_server_http_status": 200
+  }
+}

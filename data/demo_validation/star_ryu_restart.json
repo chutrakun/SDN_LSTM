@@ -1,0 +1,44 @@
+{
+  "test": "star_ryu_restart",
+  "started_at": "2026-09-07T20:42:33+07:00",
+  "completed_at": "2026-09-07T20:44:00+07:00",
+  "result": "PASS",
+  "topology_post_during_test": false,
+  "before": {
+    "backend_pid": 25427,
+    "ryu_pid": 34441,
+    "topology_pid": 59707,
+    "config_sha256": "180c4339d906f26ea4d19feeee24af1119cfcf38a60fb5062d9a42f319601a77",
+    "selected_topology": "star",
+    "runtime_topology": "star",
+    "status": "ready",
+    "in_sync": true
+  },
+  "restart": {
+    "signal": "SIGTERM",
+    "ownership_verified": true,
+    "old_ryu_stopped_after_seconds": 2,
+    "new_ryu_pid": 60952
+  },
+  "after": {
+    "backend_pid": 25427,
+    "ryu_pid": 60952,
+    "topology_pid": 59707,
+    "config_sha256": "180c4339d906f26ea4d19feeee24af1119cfcf38a60fb5062d9a42f319601a77",
+    "selected_topology": "star",
+    "runtime_topology": "star",
+    "switches": 1,
+    "directed_links": 0,
+    "stable_seconds": 25.747078938000413,
+    "status": "ready",
+    "in_sync": true,
+    "ovs_bridges": [
+      "s1"
+    ]
+  },
+  "connectivity": {
+    "pingall_loss_percent": 0.0,
+    "h1_to_h_server_ping_loss_percent": 0.0,
+    "h1_to_h_server_http_status": 200
+  }
+}

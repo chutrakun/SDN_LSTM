@@ -1,0 +1,592 @@
+{
+  "ovs_baseline_drops": {
+    "s1": 0,
+    "s2": 1,
+    "s3": 2,
+    "s4": 3
+  },
+  "recorded_at_epoch": 1788719386.943937,
+  "runs": [
+    {
+      "active_end_epoch": 1788717608.022121,
+      "active_start_epoch": 1788717548.022121,
+      "attack_source_host": "none",
+      "experiment_id": "BENIGN_R01",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "BENIGN",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788717722.7944837,
+      "active_start_epoch": 1788717662.7944837,
+      "attack_source_host": "none",
+      "experiment_id": "BENIGN_R02",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "BENIGN",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788717820.4896846,
+      "active_start_epoch": 1788717760.4896846,
+      "attack_source_host": "none",
+      "experiment_id": "BENIGN_R03",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "BENIGN",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788717919.6977012,
+      "active_start_epoch": 1788717859.6977012,
+      "attack_source_host": "none",
+      "experiment_id": "BENIGN_R04",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "BENIGN",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718022.1000314,
+      "active_start_epoch": 1788717962.1000314,
+      "attack_source_host": "none",
+      "experiment_id": "BENIGN_R05",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "BENIGN",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718106.8854628,
+      "active_start_epoch": 1788718061.8854628,
+      "attack_source_host": "h2",
+      "experiment_id": "UDP_R01",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "UDP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718198.8787434,
+      "active_start_epoch": 1788718153.8787434,
+      "attack_source_host": "h2",
+      "experiment_id": "UDP_R02",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "UDP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718280.5295012,
+      "active_start_epoch": 1788718235.5295012,
+      "attack_source_host": "h2",
+      "experiment_id": "UDP_R03",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "UDP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718362.0998204,
+      "active_start_epoch": 1788718317.0998204,
+      "attack_source_host": "h2",
+      "experiment_id": "UDP_R04",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "UDP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718444.071609,
+      "active_start_epoch": 1788718399.071609,
+      "attack_source_host": "h2",
+      "experiment_id": "UDP_R05",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "UDP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718531.8942168,
+      "active_start_epoch": 1788718486.8942168,
+      "attack_source_host": "h3",
+      "experiment_id": "SYN_R01",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "TCP_SYN_LIKE",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718615.1567802,
+      "active_start_epoch": 1788718570.1567802,
+      "attack_source_host": "h3",
+      "experiment_id": "SYN_R02",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "TCP_SYN_LIKE",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718705.4421763,
+      "active_start_epoch": 1788718660.4421763,
+      "attack_source_host": "h3",
+      "experiment_id": "SYN_R03",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "TCP_SYN_LIKE",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718789.9490726,
+      "active_start_epoch": 1788718744.9490726,
+      "attack_source_host": "h3",
+      "experiment_id": "SYN_R04",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "TCP_SYN_LIKE",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718877.8706293,
+      "active_start_epoch": 1788718832.8706293,
+      "attack_source_host": "h3",
+      "experiment_id": "SYN_R05",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "TCP_SYN_LIKE",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788718961.3500328,
+      "active_start_epoch": 1788718916.3500328,
+      "attack_source_host": "h4",
+      "experiment_id": "HTTP_R01",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "HTTP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788719045.7024205,
+      "active_start_epoch": 1788719000.7024205,
+      "attack_source_host": "h4",
+      "experiment_id": "HTTP_R02",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "HTTP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788719130.8337488,
+      "active_start_epoch": 1788719085.8337488,
+      "attack_source_host": "h4",
+      "experiment_id": "HTTP_R03",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "HTTP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788719220.5557425,
+      "active_start_epoch": 1788719175.5557425,
+      "attack_source_host": "h4",
+      "experiment_id": "HTTP_R04",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "HTTP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    },
+    {
+      "active_end_epoch": 1788719302.8433743,
+      "active_start_epoch": 1788719257.8433743,
+      "attack_source_host": "h4",
+      "experiment_id": "HTTP_R05",
+      "http_status": 200,
+      "manifest_status": "COMPLETE",
+      "openflow_recv_q": 0,
+      "openflow_send_q": 0,
+      "ovs_drops": {
+        "s1": 0,
+        "s2": 1,
+        "s3": 2,
+        "s4": 3
+      },
+      "ovs_errors": {
+        "s1": 0,
+        "s2": 0,
+        "s3": 0,
+        "s4": 0
+      },
+      "pingall_loss_percent": 0,
+      "pingall_received": "20/20",
+      "post_run_state": "IDLE",
+      "scenario_label": "HTTP_FLOOD",
+      "topology_datapaths": 4,
+      "topology_directed_links": 12,
+      "traffic_generators_remaining": []
+    }
+  ],
+  "version": "sdn_pilot_run_status_v1"
+}

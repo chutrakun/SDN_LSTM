@@ -1,0 +1,47 @@
+{
+  "active_end_epoch": 1788718198.8787434,
+  "active_end_timestamp": "2026-09-06T18:09:58.878743Z",
+  "active_start_epoch": 1788718153.8787434,
+  "active_start_timestamp": "2026-09-06T18:09:13.878743Z",
+  "attack_source_host": "h2",
+  "completed_at": "2026-09-06T18:10:03.988119Z",
+  "cooldown_end_epoch": 1788718203.8787434,
+  "cooldown_end_timestamp": "2026-09-06T18:10:03.878743Z",
+  "cooldown_seconds": 5.0,
+  "dataset_path": "data/pilot/sdn_pilot_multirun_v1.csv",
+  "duration_seconds": 45.0,
+  "exact_command": "/usr/sbin/hping3 -2 -n -q -i u2000 -p 9000 10.0.0.100",
+  "experiment_id": "UDP_R02",
+  "namespace_command": "/usr/local/bin/mnexec -a 341471 /usr/sbin/hping3 -2 -n -q -i u2000 -p 9000 10.0.0.100",
+  "ovs_bridges": [
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+  ],
+  "parameters": {
+    "hping_interval_microseconds": 2000,
+    "requested_packets_per_second": 500,
+    "udp_destination_port": 9000
+  },
+  "scenario_label": "UDP_FLOOD",
+  "start_epoch": 1788718147.8787434,
+  "start_timestamp": "2026-09-06T18:09:07.878743Z",
+  "state_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_state.json",
+  "status": "COMPLETE",
+  "status_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_status.json",
+  "target": "h_server (10.0.0.100)",
+  "target_host": "h_server",
+  "target_ip": "10.0.0.100",
+  "topology_readiness": {
+    "datapaths": 4,
+    "directed_links": 12,
+    "ready": true,
+    "stable_seconds": 712.5762140309998,
+    "updated_at": 1788718147.5920904,
+    "version": "sdn_dataset_status_v1"
+  },
+  "traffic_source_host": "h2",
+  "version": "sdn_traffic_experiment_v1",
+  "warmup_seconds": 5.0
+}

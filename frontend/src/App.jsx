@@ -51,11 +51,21 @@ import ModelUploadPage from "./pages/ModelUploadPage";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
-  const [topologyType, setTopologyType] = useState("default");
+  const [topologyType, setTopologyType] = useState("full_mesh");
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("auth_token"));
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
+
+  useEffect(() => {
+    fetch("/api/topology")
+      .then((response) => response.json())
+      .then((data) => {
+        const topology = data.in_sync ? data.runtime_topology : data.selected_topology;
+        if (topology) setTopologyType(topology);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (theme === "light") {

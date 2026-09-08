@@ -3,7 +3,7 @@ import TrafficChart from './TrafficChart';
 import TopologyView from './TopologyView';
 
 const StatCard = ({ label, value, sub, color, glowColor }) => (
-  <div className="stat-card">
+  <div className="stat-card" style={{ '--accent': color }}>
     <div className="stat-glow" style={{ background: glowColor || color }}></div>
     <div className="stat-label">{label}</div>
     <div className="stat-value" style={{ color }}>{value}</div>
@@ -30,7 +30,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
       <div className="grid">
 
         {/* Traffic */}
-        <div className="card col-2">
+        <div className="card col-2" style={{ '--accent': 'var(--blue)' }}>
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--blue)', boxShadow: '0 0 6px var(--blue)' }}></span>
             Real-time Traffic
@@ -41,7 +41,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
         </div>
 
         {/* Topology */}
-        <div className="card">
+        <div className="card" style={{ '--accent': 'var(--purple)' }}>
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--purple)', boxShadow: '0 0 6px var(--purple)' }}></span>
             Network Topology
@@ -52,7 +52,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
         </div>
 
         {/* Blocked IPs (ACL) */}
-        <div className="card">
+        <div className="card" style={{ '--accent': 'var(--red)' }}>
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--red)', boxShadow: '0 0 6px var(--red)' }}></span>
             ACL Blocked IPs
@@ -67,7 +67,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
               blocked.map((b, i) => (
                 <div className="ip-row" key={i}>
                   <span className="ip-addr">{b.ip}</span>
-                  <span className="badge badge-amber" style={{fontSize:'9px', padding:'2px 6px'}}>
+                  <span className="badge badge-amber" style={{fontSize:'11px', padding:'2px 6px'}}>
                     {b.label || 'Unknown'}
                   </span>
                   <span className="badge badge-red">{b.conf}%</span>
@@ -82,7 +82,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
         </div>
 
         {/* ML Confidence */}
-        <div className="card">
+        <div className="card" style={{ '--accent': 'var(--amber)' }}>
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--amber)', boxShadow: '0 0 6px var(--amber)' }}></span>
             ML Confidence
@@ -100,7 +100,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
                   <div key={p}>
                     <div className="meter-label">
                       <span>Port {p}</span>
-                      <span style={{ color, fontWeight: 700, fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ color, fontWeight: 700, fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                         {isAttack ? 'ATTACK' : 'NORMAL'}
                       </span>
                     </div>
@@ -116,7 +116,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
         </div>
 
         {/* Attack log */}
-        <div className="card col-3">
+        <div className="card col-3" style={{ '--accent': 'var(--amber)' }}>
           <div className="card-title">
             <span className="dot" style={{ background: 'var(--amber)', boxShadow: '0 0 6px var(--amber)' }}></span>
             Attack Log
@@ -136,7 +136,7 @@ const Dashboard = ({ state, topologyType, unblockIP }) => {
                     <span className="log-time">{l.time}</span>
                     <span className="log-msg">
                       {l.label || 'Attack'} from <strong>{l.ip}</strong>
-                      <span style={{opacity:.6, fontSize:'10px'}}> (port {l.port})</span>
+                      <span style={{opacity:.6, fontSize:'12px'}}> (port {l.port})</span>
                     </span>
                     <span className="log-conf" style={{ color }}>{conf}%</span>
                     <span className="badge badge-red">ACL BLOCKED</span>

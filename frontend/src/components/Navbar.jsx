@@ -9,7 +9,7 @@ const Navbar = ({ theme, toggleTheme }) => {
         SDN·SEC
       </div>
 
-      <div style={{ display: 'flex', gap: '2px', height: '100%', flex: 1 }}>
+      <div style={{ display: 'flex', gap: '20px', height: '100%', flex: 1 }}>
         <NavLink
           to="/"
           end

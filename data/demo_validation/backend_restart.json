@@ -1,0 +1,37 @@
+{
+  "test": "backend_restart",
+  "started_at": "2026-09-07T20:45:02+07:00",
+  "completed_at": "2026-09-07T20:46:31+07:00",
+  "result": "PASS",
+  "before": {
+    "backend_pid": 25427,
+    "ryu_pid": 60952,
+    "topology_pid": 61841,
+    "config_sha256": "cca5227b3246b288be26159e62c2076d263db363db81f16308c2c33e53633f6d"
+  },
+  "restart": {
+    "signal": "SIGTERM",
+    "ownership_verified": true,
+    "new_backend_pid": 64677
+  },
+  "after": {
+    "backend_pid": 64677,
+    "ryu_pid": 60952,
+    "topology_pid": 61841,
+    "config_sha256": "cca5227b3246b288be26159e62c2076d263db363db81f16308c2c33e53633f6d",
+    "selected_topology": "full_mesh",
+    "runtime_topology": "full_mesh",
+    "switches": 4,
+    "directed_links": 12,
+    "status": "ready",
+    "in_sync": true,
+    "ovs_bridges": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ]
+  },
+  "infrastructure_pids_unchanged": true,
+  "default_star_not_applied": true
+}

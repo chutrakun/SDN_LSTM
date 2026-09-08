@@ -48,7 +48,7 @@ const DashboardPage = ({ topologyType }) => {
         <h1>SDN Intelligent Security Dashboard</h1>
         <span className="badge badge-blue">Ryu 4.34</span>
         <span className="badge badge-purple">LSTM</span>
-        <span className="badge badge-green" style={{fontSize:'10px'}}>ACL Mode</span>
+        <span className="badge badge-green">ACL Mode</span>
         <div className="header-right">{lastUpdate}</div>
       </div>
 

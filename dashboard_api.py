@@ -5,6 +5,8 @@ import threading, time, json, os, subprocess, csv, io
 from collections import deque
 from datetime import datetime
 
+from topology.topology_manager import TopologyBusyError, TopologyManager
+
 app = Flask(__name__)
 CORS(app)
 
@@ -13,6 +15,9 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ml', '
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# ipc_path = '/tmp/unblock_requests.txt'
+# ipc_path = '/home/beepbeep-kun/unblock_requests.txt'
+
 # ─── Shared state ───
 traffic_history = deque(maxlen=60)
 blocked_ips     = {}
@@ -20,11 +25,7 @@ attack_log      = deque(maxlen=100)
 port_stats      = {}
 ml_stats        = {}
 
-topology_status = {'state': 'idle', 'topology': 'default', 'message': ''}
-
-# path ของ Python ที่ใช้รัน Mininet (pyenv)
-PYTHON_BIN  = '/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python'
-TOPO_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'topology', 'network_topology.py')
+topology_manager = TopologyManager()
 
 # ─── Ryu POST endpoints ───
 @app.route('/api/traffic', methods=['POST'])
@@ -211,304 +212,61 @@ def api_feature_importance():
 
 # ─── Topology Management ───
 
-@app.route('/api/topology/status')
+@app.route('/api/topology', methods=['GET'])
+@app.route('/api/topology/status', methods=['GET'])
 def api_topology_status():
-    return jsonify(topology_status)
+    """Return persisted desired topology and the latest Ryu-observed runtime."""
+    return jsonify(topology_manager.status())
 
+
+@app.route('/api/topology', methods=['POST'])
 @app.route('/api/topology/apply', methods=['POST'])
 def api_topology_apply():
-    global topology_status
+    """Persist a validated selection, then change Mininet asynchronously."""
+    data = request.get_json(silent=True) or {}
+    if 'topology' not in data:
+        return jsonify({'ok': False, 'error': 'topology is required'}), 400
     try:
-        data = request.json
-        topo_type = data.get('topology', 'default')
-
-        if topology_status['state'] == 'restarting':
-            return jsonify({'ok': False, 'error': 'Topology change already in progress'}), 409
-
-        # 1. เขียนไฟล์ก่อน (sync)
-        write_topology_file(topo_type)
-
-        # บันทึก topology event
-        try:
-            import db_manager as db
-            db.log_topology_event(topo_type, 'apply', f'User applied {topo_type} topology')
-        except Exception:
-            pass
-
-        # 2. เคลียร์ stats เก่า
+        result = topology_manager.apply(data['topology'])
         port_stats.clear()
         ml_stats.clear()
         traffic_history.clear()
-
-        # 3. restart Mininet ใน background thread
-        #    Ryu watchdog จะ restart Ryu เองอัตโนมัติหลัง mn -c
-        threading.Thread(target=_restart_mininet, args=(topo_type,), daemon=True).start()
-
-        return jsonify({'ok': True, 'topology': topo_type})
-
-    except Exception as e:
-        topology_status = {'state': 'error', 'topology': '', 'message': str(e)}
-        return jsonify({'ok': False, 'error': str(e)}), 500
-
-
-def _full_cleanup():
-    """ลบซาก veth / OVS ให้หมดก่อนสร้าง topology ใหม่"""
-    # 1. mn -c มาตรฐาน
-    subprocess.run(['sudo', 'mn', '-c'],
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
-    # 2. ลบ veth pair ที่ค้างอยู่ (mn -c มักข้ามไป)
-    try:
-        out = subprocess.check_output(['ip', 'link', 'show'], text=True, stderr=subprocess.DEVNULL)
-        for line in out.splitlines():
-            if ': ' in line:
-                iface = line.split(': ')[1].split('@')[0].strip()
-                if (iface.startswith('h') or iface.startswith('s')) and '-eth' in iface:
-                    subprocess.run(['sudo', 'ip', 'link', 'delete', iface],
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
-        pass
-    # 3. ลบ OVS bridge ที่เหลือ
-    try:
-        brs = subprocess.check_output(['sudo', 'ovs-vsctl', 'list-br'],
-                                      text=True, stderr=subprocess.DEVNULL)
-        for br in brs.strip().splitlines():
-            if br:
-                subprocess.run(['sudo', 'ovs-vsctl', 'del-br', br],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
-        pass
-    # 4. รีสตาร์ท OVS ให้ clean state
-    subprocess.run(['sudo', 'systemctl', 'restart', 'openvswitch-switch'],
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
-    time.sleep(2)  # รอ OVS พร้อม
-
-
-def _restart_mininet(topo_type):
-    global topology_status
-    WAIT_RYU_RESTART = 8   # วินาทีที่รอให้ Ryu watchdog restart เสร็จ
-    LOG_FILE = '/tmp/mininet_last.log'
-
-    try:
-        # ── Step 1: ฆ่า Mininet เดิม ──
-        topology_status = {'state': 'restarting', 'topology': topo_type, 'message': 'Stopping old Mininet...'}
-        print(f"[Topo] Step1: killing old network_topology.py")
-
-        subprocess.run(['sudo', 'pkill', '-TERM', '-f', 'network_topology.py'],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-        for _ in range(10):
-            r = subprocess.run(['pgrep', '-f', 'network_topology.py'],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            if r.returncode != 0:
-                break
-            time.sleep(0.5)
-        else:
-            subprocess.run(['sudo', 'pkill', '-KILL', '-f', 'network_topology.py'],
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(1)
-
-        # ── Step 2: เคลียร์แบบจัดเต็ม (ไม่ใช่แค่ mn -c) ──
-        topology_status['message'] = 'Full cleanup: removing veth pairs & OVS bridges...'
-        print(f"[Topo] Step2: full cleanup")
-        _full_cleanup()
-
-        # ── Step 3: รอให้ Ryu listen บน port 6653 (OpenFlow) จริงๆ ──
-        topology_status['message'] = 'Waiting for Ryu to come back on :6653...'
-        print(f"[Topo] Step3: polling for Ryu on :6653 (max 45s)")
-        import socket
-        ryu_up = False
-        for i in range(45):
-            try:
-                s = socket.create_connection(('127.0.0.1', 6653), timeout=1)
-                s.close()
-                ryu_up = True
-                print(f"[Topo] Ryu is up after {i+1}s")
-                break
-            except (ConnectionRefusedError, OSError):
-                time.sleep(1)
-
-        if not ryu_up:
-            topology_status = {'state': 'error', 'topology': topo_type,
-                               'message': 'Ryu ไม่กลับมาใน 45 วินาที — ตรวจสอบ ryu_watchdog.sh'}
-            print("[Topo] ERROR: Ryu never came back on :6653")
-            return
-
-        # ── Step 4: รัน Mininet ใหม่ ──
-        topology_status['message'] = f'Starting new {topo_type} topology...'
-        print(f"[Topo] Step4: launching new Mininet ({topo_type})")
-
-        log_f = open(LOG_FILE, 'w')
-        proc = subprocess.Popen(
-            ['sudo', PYTHON_BIN, TOPO_SCRIPT, '--background'],
-            stdout=log_f,
-            stderr=subprocess.STDOUT,
-            stdin=subprocess.DEVNULL,
-        )
-
-        # รอ 10 วินาที แล้วดูว่า process ยังอยู่ไหม
-        time.sleep(10)
-        if proc.poll() is not None:
-            log_f.flush()
-            try:
-                with open(LOG_FILE) as lf:
-                    err_tail = lf.read()[-600:]
-            except Exception:
-                err_tail = '(ไม่มี log)'
-            topology_status = {'state': 'error', 'topology': topo_type,
-                               'message': f'Mininet exited. Log: {err_tail}'}
-            print(f"[Topo] ERROR: Mininet died. Log:\n{err_tail}")
-            return
-
-        topology_status = {'state': 'ready', 'topology': topo_type,
-                           'message': f'{topo_type} topology running'}
-        print(f"[Topo] ✅ Done — {topo_type} running")
-
-    except subprocess.TimeoutExpired:
-        topology_status = {'state': 'error', 'topology': topo_type, 'message': 'Cleanup timed out'}
-    except Exception as e:
-        topology_status = {'state': 'error', 'topology': topo_type, 'message': str(e)}
-        print(f"[Topo] ERROR: {e}")
-
-
-def write_topology_file(topo_type):
-    header = """from mininet.net import Mininet
-from mininet.node import RemoteController, OVSSwitch
-from mininet.log import setLogLevel, info
-from mininet.link import TCLink
-import sys, time, os
-
-def create_webroot():
-    webroot = '/tmp/webroot'
-    os.makedirs(webroot, exist_ok=True)
-    html = '''<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>SDN Web Server</title>
-<style>body{font-family:sans-serif;background:#0d1520;color:#e0e0e0;
-display:flex;align-items:center;justify-content:center;min-height:100vh;}
-.c{text-align:center;padding:40px;background:rgba(255,255,255,0.05);
-border-radius:16px;border:1px solid rgba(255,255,255,0.1);}
-h1{color:#4da6ff;}.s{color:#00e5a0;font-size:48px;}</style>
-</head><body><div class="c"><div class="s">&#x2705;</div>
-<h1>SDN Web Server</h1><p>Server is running</p>
-<p style="color:#8899aa">IP: 10.0.0.100 | ACL Protection Active</p>
-</div></body></html>'''
-    with open(os.path.join(webroot, 'index.html'), 'w') as f:
-        f.write(html)
-    info('*** Web content created\\n')
-
-def run():
-    setLogLevel('info')
-
-    net = Mininet(controller=RemoteController, switch=OVSSwitch,
-                  link=TCLink, autoSetMacs=True)
-
-    info('*** Adding controller\\n')
-    c0 = net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6653)
-
-    info('*** Adding switches and hosts\\n')
-"""
-
-    # Web server host + start command (เพิ่มในทุก topology)
-    webserver_host = """
-    # Web Server
-    h_server = net.addHost('h_server', ip='10.0.0.100/24', mac='00:00:00:00:00:64')
-"""
-
-    webserver_link_s1 = """    net.addLink(h_server, s1, bw=100, delay='1ms')
-"""
-
-    footer = """
-    info('*** Starting network\\n')
-    net.start()
-
-    # Start web server
-    create_webroot()
-    info('*** Starting web server on h_server (port 80)\\n')
-    h_server.cmd('python3 -m http.server 80 --directory /tmp/webroot &')
-
-    info('*** Testing connectivity\\n')
-    net.pingAll()
-
-    import sys
-    if '--background' in sys.argv:
-        info('*** Network running in background...\\n')
-        import time
         try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
+            import db_manager as db
+            selected = result['selected_topology']
+            db.log_topology_event(selected, 'apply', 'User applied %s topology' % selected)
+        except Exception:
             pass
-    else:
-        info('*** Running CLI\\n')
-        from mininet.cli import CLI
-        CLI(net)
+        return jsonify({'ok': True, **result}), 202
+    except TopologyBusyError as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 409
+    except ValueError as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 400
+    except Exception as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 500
 
-    info('*** Stopping network\\n')
-    net.stop()
 
-if __name__ == '__main__':
-    run()
-"""
+@app.route('/api/topology/runtime', methods=['POST'])
+def api_topology_runtime():
+    """Receive observation-only discovery snapshots from the local Ryu app."""
+    if request.remote_addr not in {'127.0.0.1', '::1'}:
+        return jsonify({'ok': False, 'error': 'runtime reports are local-only'}), 403
+    try:
+        status = topology_manager.record_runtime(request.get_json(silent=True) or {})
+        return jsonify({'ok': True, 'status': status['status'], 'in_sync': status['in_sync']})
+    except ValueError as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 400
 
-    if topo_type == 'tree':
-        body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13', stp=True)
-    s2 = net.addSwitch('s2', protocols='OpenFlow13', stp=True)
-    s3 = net.addSwitch('s3', protocols='OpenFlow13', stp=True)
 
-    net.addLink(s2, s1)
-    net.addLink(s3, s1)
-
-    h1 = net.addHost('h1', ip='10.0.0.1/24')
-    h2 = net.addHost('h2', ip='10.0.0.2/24')
-    h3 = net.addHost('h3', ip='10.0.0.3/24')
-    h4 = net.addHost('h4', ip='10.0.0.4/24')
-""" + webserver_host + """
-    net.addLink(h1, s2, bw=100, delay='1ms')
-    net.addLink(h2, s2, bw=100, delay='1ms')
-    net.addLink(h3, s3, bw=100, delay='1ms')
-    net.addLink(h4, s3, bw=100, delay='1ms')
-""" + webserver_link_s1
-
-    elif topo_type == 'mesh':
-        body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13', stp=True)
-    s2 = net.addSwitch('s2', protocols='OpenFlow13', stp=True)
-    s3 = net.addSwitch('s3', protocols='OpenFlow13', stp=True)
-    s4 = net.addSwitch('s4', protocols='OpenFlow13', stp=True)
-
-    net.addLink(s1, s2)
-    net.addLink(s1, s3)
-    net.addLink(s1, s4)
-    net.addLink(s2, s3)
-    net.addLink(s2, s4)
-    net.addLink(s3, s4)
-
-    h1 = net.addHost('h1', ip='10.0.0.1/24')
-    h2 = net.addHost('h2', ip='10.0.0.2/24')
-    h3 = net.addHost('h3', ip='10.0.0.3/24')
-    h4 = net.addHost('h4', ip='10.0.0.4/24')
-""" + webserver_host + """
-    net.addLink(h1, s1, bw=100, delay='1ms')
-    net.addLink(h2, s2, bw=100, delay='1ms')
-    net.addLink(h3, s3, bw=100, delay='1ms')
-    net.addLink(h4, s4, bw=100, delay='1ms')
-""" + webserver_link_s1
-
-    else:
-        body = """    s1 = net.addSwitch('s1', protocols='OpenFlow13')
-
-    h1 = net.addHost('h1', ip='10.0.0.1/24')
-    h2 = net.addHost('h2', ip='10.0.0.2/24')
-    h3 = net.addHost('h3', ip='10.0.0.3/24')
-    h4 = net.addHost('h4', ip='10.0.0.4/24')
-""" + webserver_host + """
-    net.addLink(h1, s1, bw=100, delay='1ms')
-    net.addLink(h2, s1, bw=100, delay='1ms')
-    net.addLink(h3, s1, bw=100, delay='1ms')
-    net.addLink(h4, s1, bw=100, delay='1ms')
-""" + webserver_link_s1
-
-    os.makedirs('topology', exist_ok=True)
-    with open('topology/network_topology.py', 'w') as f:
-        f.write(header + body + footer)
+@app.route('/api/topology/diagnostics/<command>', methods=['POST'])
+def api_topology_diagnostic(command):
+    """Run a fixed Mininet connectivity diagnostic for the demo."""
+    try:
+        return jsonify(topology_manager.run_diagnostic(command))
+    except ValueError as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 400
+    except (OSError, RuntimeError) as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 503
 
 # ─────────────────────────────────────────────────────
 # Report API Endpoints

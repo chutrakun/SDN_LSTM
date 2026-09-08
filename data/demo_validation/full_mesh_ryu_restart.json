@@ -1,0 +1,67 @@
+{
+  "test": "full_mesh_ryu_restart",
+  "started_at": "2026-09-07T19:57:00+07:00",
+  "completed_at": "2026-09-07T20:26:51+07:00",
+  "result": "PASS",
+  "topology_post_during_test": false,
+  "before": {
+    "backend_pid": 25427,
+    "ryu_pid": 25535,
+    "topology_pid": 26108,
+    "topology_python_pid": 26109,
+    "config_sha256": "a57479e13fa3807ee89079e8df4a2726a246bbcd437d9262abef8919517cf4f9",
+    "ovs_bridges": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "selected_topology": "full_mesh",
+    "runtime_topology": "full_mesh",
+    "switches": 4,
+    "directed_links": 12,
+    "status": "ready",
+    "in_sync": true
+  },
+  "restart": {
+    "signal": "SIGTERM",
+    "ownership_verified": true,
+    "old_ryu_stopped_after_seconds": 2,
+    "new_ryu_pid": 34441
+  },
+  "after": {
+    "backend_pid": 25427,
+    "ryu_pid": 34441,
+    "topology_pid": 26108,
+    "topology_python_pid": 26109,
+    "config_sha256": "a57479e13fa3807ee89079e8df4a2726a246bbcd437d9262abef8919517cf4f9",
+    "ovs_bridges": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "selected_topology": "full_mesh",
+    "runtime_topology": "full_mesh",
+    "switches": 4,
+    "directed_links": 12,
+    "stable_seconds": 23.41757011200025,
+    "status": "ready",
+    "in_sync": true
+  },
+  "connectivity": {
+    "pingall_loss_percent": 0.0,
+    "h1_to_h_server_ping_loss_percent": 0.0,
+    "h1_to_h_server_http_status": 200
+  },
+  "openflow": {
+    "established_switch_connections": 4,
+    "recv_q_all_zero": true,
+    "send_q_all_zero": true,
+    "port_errors": 0,
+    "observed_cumulative_rx_drops": 6,
+    "persistent_queue_buildup": false,
+    "table_miss": "priority=0 actions=CONTROLLER:65535 on s1-s4"
+  },
+  "ryu_cpu_sample_percent": 9.0
+}

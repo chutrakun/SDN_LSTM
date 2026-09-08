@@ -1,0 +1,48 @@
+{
+  "active_end_epoch": 1788718877.8706293,
+  "active_end_timestamp": "2026-09-06T18:21:17.870629Z",
+  "active_start_epoch": 1788718832.8706293,
+  "active_start_timestamp": "2026-09-06T18:20:32.870629Z",
+  "attack_source_host": "h3",
+  "completed_at": "2026-09-06T18:21:22.966437Z",
+  "cooldown_end_epoch": 1788718882.8706293,
+  "cooldown_end_timestamp": "2026-09-06T18:21:22.870629Z",
+  "cooldown_seconds": 5.0,
+  "dataset_path": "data/pilot/sdn_pilot_multirun_v1.csv",
+  "duration_seconds": 45.0,
+  "exact_command": "/usr/sbin/hping3 -S -n -q -i u4000 -p 80 10.0.0.100",
+  "experiment_id": "SYN_R05",
+  "namespace_command": "/usr/local/bin/mnexec -a 341473 /usr/sbin/hping3 -S -n -q -i u4000 -p 80 10.0.0.100",
+  "ovs_bridges": [
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+  ],
+  "parameters": {
+    "hping_interval_microseconds": 4000,
+    "requested_packets_per_second": 250,
+    "semantics": "synthetic repeated TCP SYN workload",
+    "tcp_destination_port": 80
+  },
+  "scenario_label": "TCP_SYN_LIKE",
+  "start_epoch": 1788718826.8706293,
+  "start_timestamp": "2026-09-06T18:20:26.870629Z",
+  "state_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_state.json",
+  "status": "COMPLETE",
+  "status_path": "/home/beepbeep-kun/Anti_sdn/data/pilot/runtime/phase2h_status.json",
+  "target": "h_server (10.0.0.100)",
+  "target_host": "h_server",
+  "target_ip": "10.0.0.100",
+  "topology_readiness": {
+    "datapaths": 4,
+    "directed_links": 12,
+    "ready": true,
+    "stable_seconds": 1391.3134889059984,
+    "updated_at": 1788718826.4779165,
+    "version": "sdn_dataset_status_v1"
+  },
+  "traffic_source_host": "h3",
+  "version": "sdn_traffic_experiment_v1",
+  "warmup_seconds": 5.0
+}

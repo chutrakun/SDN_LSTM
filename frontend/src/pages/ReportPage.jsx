@@ -12,7 +12,7 @@ ChartJS.register(
   LineElement, ArcElement, Title, Tooltip, Legend, Filler
 );
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = '';
 
 // ─── Color Palette ───
 const COLORS = {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "";
 
 const LoginPage = ({ onLoginSuccess, theme, toggleTheme }) => {
   const [username, setUsername] = useState("");

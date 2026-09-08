@@ -28,11 +28,11 @@
 //           <span style={{ opacity: 0.4 }}>/</span>
 //           Network Topology
 //         </div>
-//         <h2 style={{ fontSize: '22px', fontWeight: 600, marginBottom: '6px' }}>
+//         <h2 style={{ fontSize: '26px', fontWeight: 600, marginBottom: '6px' }}>
 //           Network Topology
 //         </h2>
-//         <p style={{ color: 'var(--muted)', fontSize: '13px', lineHeight: '1.6', maxWidth: '540px' }}>
-//           Configure the underlying Mininet SDN structure. Deploying a new topology restarts both Mininet and the Ryu controller.
+//         <p style={{ color: 'var(--muted)', fontSize: '15px', lineHeight: '1.65', maxWidth: '620px' }}>
+//           Configure the underlying Mininet SDN structure. The backend persists the selected topology, restarts Mininet, and waits for Ryu to verify the live graph.
 //         </p>
 //       </div>
 
@@ -73,7 +73,7 @@
 //         >
 //           <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
 //         </svg>
-//         <div style={{ fontSize: '12px', color: 'var(--muted)', lineHeight: '1.6' }}>
+//         <div style={{ fontSize: '14px', color: 'var(--muted)', lineHeight: '1.65' }}>
 //           <strong style={{ color: 'var(--amber)', fontWeight: 600 }}>Warning: </strong>
 //           Confirming will modify{' '}
 //           <code style={{
@@ -112,14 +112,14 @@ const TopologySettingsPage = ({ topologyType, setTopologyType }) => {
           Network Topology
         </h2>
         <p style={{ color: 'var(--muted)', fontSize: '13px', lineHeight: '1.6', maxWidth: '540px' }}>
-          Configure the underlying Mininet SDN structure. Deploying a new topology restarts both Mininet and the Ryu controller.
+          Configure the underlying Mininet SDN structure. Deploying a new topology restarts only Mininet; the Ryu controller stays running.
         </p>
       </div>
 
       {/* ── Topology Selector Component ── */}
       <div style={{ marginBottom: '8px' }}>
         <div style={{
-          fontSize: '11px',
+          fontSize: '13px',
           fontWeight: 600,
           letterSpacing: '1.2px',
           textTransform: 'uppercase',
@@ -155,17 +155,7 @@ const TopologySettingsPage = ({ topologyType, setTopologyType }) => {
         </svg>
         <div style={{ fontSize: '12px', color: 'var(--muted)', lineHeight: '1.6' }}>
           <strong style={{ color: 'var(--amber)', fontWeight: 600 }}>Warning: </strong>
-          Confirming will modify{' '}
-          <code style={{
-            fontSize: '11px',
-            background: 'rgba(255,255,255,0.06)',
-            padding: '1px 5px',
-            borderRadius: '4px',
-          }}>
-            network_topology.py
-          </code>{' '}
-          on the server and clear the existing Mininet environment (removes veth interfaces and OVS bridges)
-          before relaunching automatically. This process may take 10–20 seconds.
+          The selected profile is saved on the backend before Mininet changes. Keep Ryu running while the page shows Changing, and wait for Ready before testing connectivity.
         </div>
       </div>
     </div>

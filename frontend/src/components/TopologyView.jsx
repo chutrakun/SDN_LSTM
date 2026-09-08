@@ -105,7 +105,7 @@ const TopologyView = ({ topologyType, blockedIPs = [] }) => {
   );
 
   // ── DEFAULT / STAR ──
-  if (!topologyType || topologyType === 'default') {
+  if (!topologyType || topologyType === 'star' || topologyType === 'default') {
     return (
       <svg viewBox="0 0 260 240" width={260} height={240}>
         {/* Controller */}
