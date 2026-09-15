@@ -40,7 +40,7 @@ h1{color:#4da6ff}.s{color:#00e5a0;font-size:48px}</style>
     info("*** Web content created\n")
 
 
-def build_network(topology_id):
+def build_network(topology_id, controller_host="127.0.0.1", controller_port=6653):
     profile = profile_for(topology_id)
     net = Mininet(
         controller=RemoteController,
@@ -49,7 +49,10 @@ def build_network(topology_id):
         autoSetMacs=True,
     )
     info("*** Adding controller\n")
-    net.addController("c0", controller=RemoteController, ip="127.0.0.1", port=6653)
+    net.addController(
+        "c0", controller=RemoteController,
+        ip=controller_host, port=controller_port,
+    )
 
     info("*** Adding %s switches and hosts\n" % topology_id)
     switches = {}
@@ -118,14 +121,20 @@ def _serve_control(net, hosts, socket_path, stop_requested):
             pass
 
 
-def run(config_path=DEFAULT_CONFIG_PATH, background=False, control_socket=None):
+def run(
+    config_path=DEFAULT_CONFIG_PATH,
+    background=False,
+    control_socket=None,
+    controller_host="127.0.0.1",
+    controller_port=6653,
+):
     setLogLevel("info")
     config, fallback = load_topology_config(config_path)
     if fallback:
         info("*** %s\n" % fallback)
     topology_id = config["topology"]
     info("*** Persisted topology: %s\n" % topology_id)
-    net, hosts = build_network(topology_id)
+    net, hosts = build_network(topology_id, controller_host, controller_port)
     stop_requested = [False]
 
     def request_stop(_signum, _frame):
@@ -156,9 +165,17 @@ def parse_args():
     parser.add_argument("--background", action="store_true")
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH)
     parser.add_argument("--control-socket", default="/tmp/anti_sdn_topology.sock")
+    parser.add_argument("--controller-host", default=os.environ.get("RYU_HOST", "127.0.0.1"))
+    parser.add_argument("--controller-port", type=int, default=int(os.environ.get("RYU_PORT", "6653")))
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     arguments = parse_args()
-    run(arguments.config, arguments.background, arguments.control_socket)
+    run(
+        arguments.config,
+        arguments.background,
+        arguments.control_socket,
+        arguments.controller_host,
+        arguments.controller_port,
+    )

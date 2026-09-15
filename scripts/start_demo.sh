@@ -1,8 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-RYU_BIN="/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/ryu-manager"
+# shellcheck source=scripts/common.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+PROJECT_DIR="$ROOT"
 LOG_DIR="/tmp/anti_sdn_demo"
 mkdir -p "$LOG_DIR"
 
@@ -41,7 +42,7 @@ trap cleanup INT TERM EXIT
 cd "$PROJECT_DIR"
 python3 dashboard_api.py >"$LOG_DIR/backend.log" 2>&1 &
 BACKEND_PID=$!
-"$RYU_BIN" --ofp-tcp-listen-port 6653 --observe-links controller/ryu_controller.py >"$LOG_DIR/ryu.log" 2>&1 &
+"$PYTHON_BIN" -m ryu.cmd.manager --ofp-tcp-listen-port 6653 --observe-links controller/ryu_controller.py >"$LOG_DIR/ryu.log" 2>&1 &
 RYU_PID=$!
 (
     cd frontend

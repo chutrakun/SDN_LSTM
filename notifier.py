@@ -1,18 +1,23 @@
 """
 Notification Module — Telegram Bot
 """
+import os
+from pathlib import Path
 import urllib.request, urllib.parse, json
 import smtplib, threading
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent / '.env')
 
 # ── Telegram config ──
-TELEGRAM_TOKEN   = "8593580381:AAEJgHeAGTdhEWwidUHobcrbNC-VaYoxL4s"        # token จาก @BotFather
-TELEGRAM_CHAT_ID = "8579118512"        # chat_id จาก getUpdates
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')
 
 # ── Email config (optional) ──
-EMAIL_SENDER   = ""
-EMAIL_PASSWORD = ""
-EMAIL_RECEIVER = ""
+EMAIL_SENDER = os.environ.get('EMAIL_SENDER', '')
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
+EMAIL_RECEIVER = os.environ.get('EMAIL_RECEIVER', '')
 
 DEFAULT_MODEL_LABEL = "LSTM"
 

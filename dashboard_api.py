@@ -4,6 +4,12 @@ from werkzeug.utils import secure_filename
 import threading, time, json, os, subprocess, csv, io
 from collections import deque
 from datetime import datetime
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+load_dotenv(PROJECT_ROOT / '.env')
 
 from topology.topology_manager import TopologyBusyError, TopologyManager
 
@@ -11,12 +17,11 @@ app = Flask(__name__)
 CORS(app)
 
 # ─── Model Uploads Setup ───
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ml', 'model', 'uploads')
+UPLOAD_FOLDER = str(PROJECT_ROOT / 'ml' / 'model' / 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# ipc_path = '/tmp/unblock_requests.txt'
-# ipc_path = '/home/beepbeep-kun/unblock_requests.txt'
+UNBLOCK_IPC_PATH = os.environ.get('SDN_UNBLOCK_IPC_PATH', '/tmp/unblock_requests.txt')
 
 # ─── Shared state ───
 traffic_history = deque(maxlen=60)
@@ -91,7 +96,7 @@ def api_state():
 
 @app.route('/')
 def index():
-    return open('dashboard.html').read()
+    return (PROJECT_ROOT / 'dashboard.html').read_text(encoding='utf-8')
 
 # ── DB endpoints ──
 @app.route('/api/db/attacks')
@@ -152,7 +157,7 @@ def api_unblock():
         # เขียน IPC file ส่งต่อให้ Ryu เพื่อปลดบล็อกใน OVS flow จริง
         for target_ip in ips_to_unblock:
             try:
-                with open('/tmp/unblock_requests.txt', 'a') as f:
+                with open(UNBLOCK_IPC_PATH, 'a') as f:
                     f.write(f"{target_ip}\n")
             except Exception:
                 pass
@@ -180,7 +185,7 @@ def api_unblock_ip(ip):
 
         # เขียน IPC file ส่งต่อให้ Ryu เพื่อปลดบล็อกใน OVS flow จริง
         try:
-            with open('/tmp/unblock_requests.txt', 'a') as f:
+            with open(UNBLOCK_IPC_PATH, 'a') as f:
                 f.write(f"{ip}\n")
         except Exception:
             pass
@@ -495,5 +500,7 @@ if __name__ == '__main__':
         pass
     # เริ่ม scheduled job
     threading.Thread(target=_scheduled_jobs, daemon=True).start()
-    print("🌐 Dashboard: http://localhost:5000")
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    backend_host = os.environ.get('BACKEND_HOST', '0.0.0.0')
+    backend_port = int(os.environ.get('BACKEND_PORT', '5000'))
+    print(f"🌐 Dashboard: http://{backend_host}:{backend_port}")
+    app.run(host=backend_host, port=backend_port, debug=False, threaded=True)

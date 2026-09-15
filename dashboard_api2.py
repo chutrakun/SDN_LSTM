@@ -23,7 +23,10 @@ ml_stats        = {}
 topology_status = {'state': 'idle', 'topology': 'default', 'message': ''}
 
 # path ของ Python ที่ใช้รัน Mininet (pyenv)
-PYTHON_BIN  = '/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python'
+PYTHON_BIN = os.environ.get(
+    'SDN_MININET_PYTHON',
+    os.path.expanduser('~/.pyenv/versions/sdn-env38/bin/python'),
+)
 TOPO_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'topology', 'network_topology.py')
 
 # ─── Ryu POST endpoints ───

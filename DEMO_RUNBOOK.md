@@ -2,37 +2,16 @@
 
 ## 1. Project and startup
 
-Project directory:
+From the cloned project directory, use the portable lifecycle scripts:
 
 ```bash
-cd /home/beepbeep-kun/Anti_sdn
+chmod +x scripts/*.sh
+./scripts/setup.sh       # first installation only
+./scripts/check.sh
+./scripts/start.sh
 ```
 
-Start the complete demo in one terminal:
-
-```bash
-./scripts/start_demo.sh
-```
-
-Or start each service in its own terminal:
-
-```bash
-cd /home/beepbeep-kun/Anti_sdn
-python3 dashboard_api.py
-```
-
-```bash
-cd /home/beepbeep-kun/Anti_sdn
-/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/ryu-manager \
-  --ofp-tcp-listen-port 6653 --observe-links controller/ryu_controller.py
-```
-
-```bash
-cd /home/beepbeep-kun/Anti_sdn/frontend
-npm run dev -- --host 0.0.0.0
-```
-
-Open `http://localhost:5173`. The API is `http://localhost:5000`; Ryu listens on TCP `6653`.
+Open `http://localhost:5173`. The API is `http://localhost:5000`; Ryu listens on TCP `6653`. Use `./scripts/status.sh`, `./scripts/logs.sh`, and `./scripts/stop.sh` for normal operations.
 
 ## 2. Topology selection and READY
 

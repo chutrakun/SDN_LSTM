@@ -4,16 +4,23 @@ Database Manager — PostgreSQL
          แก้ retention ของ traffic_stats จาก 1h → 24h
          เพิ่ม column attack_type, dpid ใน attack_log
 """
+import os
+from pathlib import Path
+
 import psycopg2, psycopg2.extras, time
+from dotenv import load_dotenv
 from datetime import datetime, date
 from contextlib import contextmanager
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+load_dotenv(PROJECT_ROOT / '.env')
+
 DB_CONFIG = {
-    'host':     'localhost',
-    'port':     5432,
-    'dbname':   'sdn_security',
-    'user':     'sdn_user',
-    'password': 'admin'
+    'host': os.environ.get('DB_HOST', '127.0.0.1'),
+    'port': int(os.environ.get('DB_PORT', '5432')),
+    'dbname': os.environ.get('DB_NAME', 'sdn_security'),
+    'user': os.environ.get('DB_USER', 'sdn_user'),
+    'password': os.environ.get('DB_PASSWORD', ''),
 }
 
 def init_db():

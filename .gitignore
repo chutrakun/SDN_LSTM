@@ -1,0 +1,32 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Logs and process state
+*.log
+*.pid
+*.sock
+logs/
+runtime/
+
+# Frontend dependencies and builds
+frontend/node_modules/
+frontend/dist/
+frontend/*.local
+
+# User-uploaded models; canonical ml/model artifacts remain tracked
+ml/model/uploads/
+
+# Generated reports and experiment runtime state
+attack_report_*.csv
+data/experiments/
+data/pilot/runtime/
+unblock_requests.txt

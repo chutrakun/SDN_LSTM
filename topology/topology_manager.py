@@ -8,6 +8,9 @@ import subprocess
 import tempfile
 import threading
 import time
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 from topology.topology_config import (
     DEFAULT_CONFIG_PATH,
@@ -22,13 +25,17 @@ from topology.topology_config import (
 
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(Path(PROJECT_ROOT) / '.env')
 TOPOLOGY_SCRIPT = os.path.join(PROJECT_ROOT, "topology", "network_topology.py")
-PYTHON_BIN = "/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python"
+PYTHON_BIN = os.environ.get(
+    "SDN_MININET_PYTHON",
+    os.path.expanduser("~/.pyenv/versions/sdn-env38/bin/python"),
+)
 PID_PATH = "/tmp/anti_sdn_topology.pid"
 LOG_PATH = "/tmp/anti_sdn_mininet.log"
 CONTROL_SOCKET = "/tmp/anti_sdn_topology.sock"
-RYU_HOST = "127.0.0.1"
-RYU_PORT = 6653
+RYU_HOST = os.environ.get("RYU_HOST", "127.0.0.1")
+RYU_PORT = int(os.environ.get("RYU_PORT", "6653"))
 RUNTIME_STALE_SECONDS = 15
 READINESS_TIMEOUT_SECONDS = 75
 
@@ -371,6 +378,11 @@ class TopologyManager:
             pass
 
     def _start_mininet(self):
+        if not os.path.isfile(PYTHON_BIN) or not os.access(PYTHON_BIN, os.X_OK):
+            raise RuntimeError(
+                "Mininet interpreter is unavailable: %s; set SDN_MININET_PYTHON "
+                "or run scripts/setup.sh" % PYTHON_BIN
+            )
         log_handle = open(LOG_PATH, "w")
         try:
             process = subprocess.Popen(
@@ -378,6 +390,8 @@ class TopologyManager:
                     "sudo", "-n", PYTHON_BIN, TOPOLOGY_SCRIPT,
                     "--background", "--config", self.config_path,
                     "--control-socket", CONTROL_SOCKET,
+                    "--controller-host", RYU_HOST,
+                    "--controller-port", str(RYU_PORT),
                 ],
                 cwd=PROJECT_ROOT,
                 stdin=subprocess.DEVNULL,
@@ -404,12 +418,12 @@ class TopologyManager:
                 self._message = "Stopping old Mininet and cleaning stale interfaces"
             self._stop_mininet()
             with self._lock:
-                self._message = "Waiting for Ryu on 127.0.0.1:6653"
+                self._message = "Waiting for Ryu on %s:%s" % (RYU_HOST, RYU_PORT)
             deadline = time.time() + 30
             while time.time() < deadline and not self._ryu_available():
                 time.sleep(1)
             if not self._ryu_available():
-                raise RuntimeError("Ryu is unavailable on 127.0.0.1:6653")
+                raise RuntimeError("Ryu is unavailable on %s:%s" % (RYU_HOST, RYU_PORT))
             with self._lock:
                 self._message = "Starting persisted %s topology" % topology_id
             self._start_mininet()

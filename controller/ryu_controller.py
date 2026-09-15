@@ -21,7 +21,6 @@
 # LE_PATH     = os.path.join(BASE, '../ml/model/label_encoder.pkl')
 
 # # ipc_path = '/tmp/unblock_requests.txt'
-# # ipc_path = '/home/beepbeep-kun/unblock_requests.txt'
 
 # BLOCK_THRESHOLD  = 0.90
 # BLOCK_DURATION   = 120
@@ -668,6 +667,13 @@ LOG = logging.getLogger("sdn.lstm")
 # ---------------------------------------------------------------------
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE)
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+except ImportError:
+    pass
 
 
 # ---------------------------------------------------------------------
@@ -700,7 +706,10 @@ BLOCK_DURATION = 120
 
 STATS_INTERVAL = 2
 
-DASH_URL = "http://localhost:5000"
+BACKEND_PORT = int(os.environ.get("BACKEND_PORT", "5000"))
+DASH_URL = os.environ.get("BACKEND_URL", "http://127.0.0.1:%s" % BACKEND_PORT)
+
+UNBLOCK_IPC_PATH = os.environ.get("SDN_UNBLOCK_IPC_PATH", "/tmp/unblock_requests.txt")
 
 WARMUP_SECONDS = 60
 
@@ -3285,9 +3294,7 @@ class IntelligentController(app_manager.RyuApp):
             # 2. Admin IPC
             # ---------------------------------------------------------
 
-            ipc_path = (
-                "/tmp/unblock_requests.txt"
-            )
+            ipc_path = UNBLOCK_IPC_PATH
 
             if os.path.exists(
                 ipc_path
