@@ -32,8 +32,9 @@ destination port context. `last_source_ip` is audit metadata. Protocol,
 destination port, and source IP can be empty and are last-seen PacketIn context,
 not a summary of every packet in the polling window.
 
-Rows begin only after the controller observes four switches, twelve directed
-links, and a complete polling interval after the topology stability window.
+Rows begin only after the controller observes the exact persisted Star, Tree,
+or Full Mesh switch/link graph and a complete polling interval after the
+topology stability window. The status file includes the validated topology ID.
 Counter-reset windows with negative values are skipped. Enqueueing is
 nonblocking; a bounded queue feeds a background writer that flushes periodically.
 

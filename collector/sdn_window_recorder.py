@@ -96,6 +96,7 @@ class SdnWindowCsvRecorder:
             "version": STATUS_VERSION,
             "updated_at": time.time(),
             "ready": False,
+            "topology": None,
             "datapaths": 0,
             "directed_links": 0,
             "stable_seconds": 0.0,
@@ -262,6 +263,7 @@ class SdnWindowCsvRecorder:
     def update_topology_status(
         self,
         ready,
+        topology,
         datapaths,
         directed_links,
         stable_seconds,
@@ -274,6 +276,7 @@ class SdnWindowCsvRecorder:
             "version": STATUS_VERSION,
             "updated_at": time.time(),
             "ready": bool(ready),
+            "topology": topology,
             "datapaths": int(datapaths),
             "directed_links": int(directed_links),
             "stable_seconds": float(stable_seconds),

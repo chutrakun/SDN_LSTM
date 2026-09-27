@@ -13,15 +13,31 @@ import sys
 import tempfile
 import time
 import uuid
+import urllib.error
+import urllib.request
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+from collector.dataset_topology_readiness import selected_topology
+from topology.topology_config import (
+    DEFAULT_CONFIG_PATH,
+    TOPOLOGIES,
+    normalize_topology_id,
+    public_profile,
+)
 
 
 STATE_VERSION = "sdn_experiment_state_v1"
 STATUS_VERSION = "sdn_dataset_status_v1"
 MANIFEST_VERSION = "sdn_traffic_experiment_v1"
 SCENARIOS = ("BENIGN", "UDP_FLOOD", "TCP_SYN_LIKE", "HTTP_FLOOD")
-EXPECTED_BRIDGES = {"s1", "s2", "s3", "s4"}
 TARGET_IP = "10.0.0.100"
 TARGET_HOST = "h_server"
+HOST_IPS = {"h1": "10.0.0.1", "h2": "10.0.0.2",
+            "h3": "10.0.0.3", "h4": "10.0.0.4"}
 
 
 def utc_timestamp(epoch=None):
@@ -91,7 +107,21 @@ def host_pid(host):
     return live[0]
 
 
-def wait_for_readiness(status_path, timeout_seconds):
+def selected_runtime_profile(config_path, requested_topology=None):
+    selected = selected_topology(config_path)
+    if selected is None:
+        raise RuntimeError("selected topology config is missing or invalid")
+    topology_id = selected[0]
+    if requested_topology is not None:
+        requested_topology = normalize_topology_id(requested_topology)
+        if requested_topology != topology_id:
+            raise RuntimeError(
+                "requested topology {} is not selected (current: {})".format(
+                    requested_topology, topology_id))
+    return topology_id, public_profile(topology_id)
+
+
+def wait_for_readiness(status_path, timeout_seconds, topology_id, profile):
     deadline = time.monotonic() + timeout_seconds
     last_reason = "status file has not appeared"
     while time.monotonic() < deadline:
@@ -102,8 +132,9 @@ def wait_for_readiness(status_path, timeout_seconds):
             valid = (
                 status.get("version") == STATUS_VERSION
                 and status.get("ready") is True
-                and status.get("datapaths") == 4
-                and status.get("directed_links") == 12
+                and status.get("topology") == topology_id
+                and status.get("datapaths") == profile["switches"]
+                and status.get("directed_links") == profile["directed_links"]
                 and float(status.get("stable_seconds", 0)) >= 5.0
                 and -1.0 <= age <= 5.0
             )
@@ -126,7 +157,7 @@ def wait_for_readiness(status_path, timeout_seconds):
     )
 
 
-def verify_bridges(ovs_vsctl):
+def verify_bridges(ovs_vsctl, topology_id):
     result = subprocess.run(
         [ovs_vsctl, "list-br"],
         check=True,
@@ -135,13 +166,40 @@ def verify_bridges(ovs_vsctl):
         text=True,
     )
     bridges = set(result.stdout.split())
-    if bridges != EXPECTED_BRIDGES:
+    expected_bridges = set(TOPOLOGIES[topology_id]["switches"])
+    if bridges != expected_bridges:
         raise RuntimeError(
             "expected OVS bridges {}, found {}".format(
-                sorted(EXPECTED_BRIDGES), sorted(bridges)
-            )
-        )
+                sorted(expected_bridges), sorted(bridges)))
     return sorted(bridges)
+
+
+def backend_state(base_url):
+    request = urllib.request.Request(base_url.rstrip("/") + "/api/state")
+    with urllib.request.urlopen(request, timeout=3) as response:
+        return json.load(response)
+
+
+def new_runtime_evidence(before, after, source_ip):
+    before_count = int(before.get("ml_event_count", 0))
+    before_attack_count = int(before.get("attack_event_count", 0))
+    events = [event for event in after.get("ml_events", [])
+              if int(event.get("sequence", 0)) > before_count
+              and event.get("ip") == source_ip]
+    attacks = [event for event in after.get("log", [])
+               if int(event.get("sequence", 0)) > before_attack_count
+               and event.get("ip") == source_ip]
+    blocked = [entry for entry in after.get("blocked", [])
+               if entry.get("ip") == source_ip]
+    return {
+        "ml_event_count_before": before_count,
+        "ml_event_count_after": int(after.get("ml_event_count", 0)),
+        "attack_event_count_before": before_attack_count,
+        "attack_event_count_after": int(after.get("attack_event_count", 0)),
+        "matching_ml_events": events,
+        "matching_attack_events": attacks,
+        "matching_blocked_entries": blocked,
+    }
 
 
 def scenario_spec(args, binaries):
@@ -262,6 +320,11 @@ def parse_args():
     parser.add_argument("scenario", choices=SCENARIOS)
     parser.add_argument("--experiment-id")
     parser.add_argument("--source-host", choices=("h1", "h2", "h3", "h4"))
+    parser.add_argument("--topology", choices=tuple(TOPOLOGIES))
+    parser.add_argument("--config-path", default=DEFAULT_CONFIG_PATH)
+    parser.add_argument("--backend-url", default="http://127.0.0.1:5000")
+    parser.add_argument("--require-ml", action="store_true")
+    parser.add_argument("--expect-block", action="store_true")
     parser.add_argument("--warmup", type=float, default=5.0)
     parser.add_argument("--duration", type=float, default=15.0)
     parser.add_argument("--cooldown", type=float, default=5.0)
@@ -307,6 +370,8 @@ def parse_args():
         parser.error("--http-concurrency must be between 1 and 32")
     if args.benign_interval < 0.1:
         parser.error("--benign-interval must be at least 0.1")
+    if args.expect_block:
+        args.require_ml = True
     return args
 
 
@@ -322,6 +387,8 @@ def main():
     source_host, attack_source_host, command, parameters = scenario_spec(
         args, binaries
     )
+    topology_id, topology_profile = selected_runtime_profile(
+        args.config_path, args.topology)
     experiment_id = args.experiment_id or "{}_{}_{}".format(
         args.scenario,
         datetime.datetime.now().strftime("%Y%m%dT%H%M%S"),
@@ -339,9 +406,16 @@ def main():
     except BlockingIOError as exc:
         raise RuntimeError("another traffic experiment is already active") from exc
 
-    readiness = wait_for_readiness(args.status_path, args.readiness_timeout)
-    bridges = verify_bridges(binaries["ovs-vsctl"])
+    readiness = wait_for_readiness(
+        args.status_path, args.readiness_timeout, topology_id, topology_profile)
+    bridges = verify_bridges(binaries["ovs-vsctl"], topology_id)
     namespace_pid = host_pid(source_host)
+    try:
+        state_before = backend_state(args.backend_url)
+    except (OSError, ValueError, urllib.error.URLError) as exc:
+        if args.require_ml or args.expect_block:
+            raise RuntimeError("backend state is required: {}".format(exc))
+        state_before = {}
 
     start = time.time()
     active_start = start + args.warmup + 1.0
@@ -368,6 +442,8 @@ def main():
         "target_host": TARGET_HOST,
         "target_ip": TARGET_IP,
         "target": "{} ({})".format(TARGET_HOST, TARGET_IP),
+        "topology": topology_id,
+        "expected_topology": topology_profile,
         "duration_seconds": args.duration,
         "warmup_seconds": args.warmup,
         "cooldown_seconds": args.cooldown,
@@ -432,6 +508,24 @@ def main():
         terminate_process_group(process)
         process = None
         time.sleep(args.cooldown)
+
+        try:
+            state_after = backend_state(args.backend_url)
+        except (OSError, ValueError, urllib.error.URLError) as exc:
+            if args.require_ml or args.expect_block:
+                raise RuntimeError("backend evidence is unavailable: {}".format(exc))
+            state_after = {}
+        evidence = new_runtime_evidence(
+            state_before, state_after, HOST_IPS[source_host])
+        manifest["runtime_evidence"] = evidence
+        if args.require_ml and not evidence["matching_ml_events"]:
+            raise RuntimeError(
+                "traffic completed but no new ML event was observed for {}".format(source_host))
+        if args.expect_block and not (
+                evidence["matching_attack_events"]
+                or evidence["matching_blocked_entries"]):
+            raise RuntimeError(
+                "ML ran but no block/attack event was observed for {}".format(source_host))
 
         manifest["status"] = "COMPLETE"
         manifest["completed_at"] = utc_timestamp()

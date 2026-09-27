@@ -1,0 +1,1028 @@
+{
+  "completed_experiments": [
+    "V3_full_mesh_h1_BENIGN_p00_R01",
+    "V3_full_mesh_h1_BENIGN_p01_R01",
+    "V3_full_mesh_h1_UDP_FLOOD_p00_R01",
+    "V3_full_mesh_h1_UDP_FLOOD_p01_R01",
+    "V3_full_mesh_h2_BENIGN_p02_R01",
+    "V3_full_mesh_h2_BENIGN_p03_R01",
+    "V3_full_mesh_h2_UDP_FLOOD_p02_R01",
+    "V3_full_mesh_h2_UDP_FLOOD_p03_R01",
+    "V3_full_mesh_h3_BENIGN_p01_R01",
+    "V3_full_mesh_h3_UDP_FLOOD_p01_R01",
+    "V3_full_mesh_h4_BENIGN_p03_R02",
+    "V3_full_mesh_h4_UDP_FLOOD_p03_R02",
+    "V3_star_h1_BENIGN_p00_R01",
+    "V3_star_h1_BENIGN_p01_R01",
+    "V3_star_h1_UDP_FLOOD_p00_R01",
+    "V3_star_h1_UDP_FLOOD_p01_R01",
+    "V3_star_h2_BENIGN_p02_R01",
+    "V3_star_h2_BENIGN_p03_R01",
+    "V3_star_h2_UDP_FLOOD_p00_R01",
+    "V3_star_h2_UDP_FLOOD_p02_R01",
+    "V3_star_h2_UDP_FLOOD_p03_R01",
+    "V3_star_h3_BENIGN_p01_R01",
+    "V3_star_h3_UDP_FLOOD_p01_R01",
+    "V3_star_h4_BENIGN_p03_R01",
+    "V3_star_h4_UDP_FLOOD_p03_R02",
+    "V3_tree_h1_BENIGN_p00_R01",
+    "V3_tree_h1_BENIGN_p01_R01",
+    "V3_tree_h1_UDP_FLOOD_p00_R01",
+    "V3_tree_h1_UDP_FLOOD_p01_R01",
+    "V3_tree_h2_BENIGN_p02_R01",
+    "V3_tree_h2_BENIGN_p03_R01",
+    "V3_tree_h2_UDP_FLOOD_p02_R01",
+    "V3_tree_h2_UDP_FLOOD_p03_R01",
+    "V3_tree_h3_BENIGN_p01_R01",
+    "V3_tree_h3_UDP_FLOOD_p01_R01",
+    "V3_tree_h4_BENIGN_p03_R02",
+    "V3_tree_h4_UDP_FLOOD_p03_R02"
+  ],
+  "context_rows": 6543,
+  "context_view_path": "/home/beepbeep-kun/Anti_sdn/data/v3/context_windows_v1.csv",
+  "context_zero_rx_pps_percent": 51.5818431911967,
+  "duplicate_windows": 0,
+  "excluded_incomplete_or_unhealthy_rows": 24,
+  "manifest_count": 38,
+  "manifest_statuses": {
+    "COMPLETE": 37,
+    "FAILED": 1
+  },
+  "missing_values": {
+    "attack_source_host": 0,
+    "dpid": 0,
+    "experiment_id": 0,
+    "interval_seconds": 0,
+    "last_dst_port": 1806,
+    "last_protocol": 1806,
+    "last_source_ip": 1776,
+    "notes": 0,
+    "port": 0,
+    "profile_id": 0,
+    "rx_bytes_delta": 0,
+    "rx_bytes_per_sec": 0,
+    "rx_packets_delta": 0,
+    "rx_pps": 0,
+    "scenario_label": 0,
+    "schema_version": 0,
+    "source_dpid": 0,
+    "source_port": 0,
+    "topology": 0,
+    "traffic_source_host": 0,
+    "tx_bytes_delta": 0,
+    "tx_bytes_per_sec": 0,
+    "tx_packets_delta": 0,
+    "tx_pps": 0,
+    "window_end": 0,
+    "window_start": 0
+  },
+  "negative_values": {
+    "interval_seconds": 0,
+    "rx_bytes_delta": 0,
+    "rx_bytes_per_sec": 0,
+    "rx_packets_delta": 0,
+    "rx_pps": 0,
+    "tx_bytes_delta": 0,
+    "tx_bytes_per_sec": 0,
+    "tx_packets_delta": 0,
+    "tx_pps": 0
+  },
+  "nonfinite_values": {
+    "interval_seconds": 0,
+    "rx_bytes_delta": 0,
+    "rx_bytes_per_sec": 0,
+    "rx_packets_delta": 0,
+    "rx_pps": 0,
+    "tx_bytes_delta": 0,
+    "tx_bytes_per_sec": 0,
+    "tx_packets_delta": 0,
+    "tx_pps": 0
+  },
+  "planned_distribution": {
+    "host": {
+      "h1": 96,
+      "h2": 96,
+      "h3": 96,
+      "h4": 96
+    },
+    "profile": {
+      "p00": 96,
+      "p01": 96,
+      "p02": 96,
+      "p03": 96
+    },
+    "scenario": {
+      "BENIGN": 96,
+      "HTTP_FLOOD": 96,
+      "TCP_SYN_LIKE": 96,
+      "UDP_FLOOD": 96
+    },
+    "topology": {
+      "full_mesh": 128,
+      "star": 128,
+      "tree": 128
+    }
+  },
+  "planned_experiments": 384,
+  "raw_rows": 7116,
+  "recorded_rows_by_experiment": {
+    "V3_full_mesh_h1_BENIGN_p00_R01": 273,
+    "V3_full_mesh_h1_BENIGN_p01_R01": 273,
+    "V3_full_mesh_h1_UDP_FLOOD_p00_R01": 273,
+    "V3_full_mesh_h1_UDP_FLOOD_p01_R01": 273,
+    "V3_full_mesh_h2_BENIGN_p02_R01": 273,
+    "V3_full_mesh_h2_BENIGN_p03_R01": 336,
+    "V3_full_mesh_h2_UDP_FLOOD_p02_R01": 273,
+    "V3_full_mesh_h2_UDP_FLOOD_p03_R01": 336,
+    "V3_full_mesh_h3_BENIGN_p01_R01": 273,
+    "V3_full_mesh_h3_UDP_FLOOD_p01_R01": 273,
+    "V3_full_mesh_h4_BENIGN_p03_R02": 399,
+    "V3_full_mesh_h4_UDP_FLOOD_p03_R02": 399,
+    "V3_star_h1_BENIGN_p00_R01": 60,
+    "V3_star_h1_BENIGN_p01_R01": 78,
+    "V3_star_h1_UDP_FLOOD_p00_R01": 60,
+    "V3_star_h1_UDP_FLOOD_p01_R01": 78,
+    "V3_star_h2_BENIGN_p02_R01": 78,
+    "V3_star_h2_BENIGN_p03_R01": 96,
+    "V3_star_h2_UDP_FLOOD_p00_R01": 60,
+    "V3_star_h2_UDP_FLOOD_p02_R01": 78,
+    "V3_star_h2_UDP_FLOOD_p03_R01": 96,
+    "V3_star_h3_BENIGN_p01_R01": 108,
+    "V3_star_h3_UDP_FLOOD_p01_R01": 114,
+    "V3_star_h4_BENIGN_p03_R01": 96,
+    "V3_star_h4_BENIGN_p03_R02": 24,
+    "V3_star_h4_UDP_FLOOD_p03_R02": 60,
+    "V3_tree_h1_BENIGN_p00_R01": 228,
+    "V3_tree_h1_BENIGN_p01_R01": 228,
+    "V3_tree_h1_UDP_FLOOD_p00_R01": 228,
+    "V3_tree_h1_UDP_FLOOD_p01_R01": 228,
+    "V3_tree_h2_BENIGN_p02_R01": 120,
+    "V3_tree_h2_BENIGN_p03_R01": 228,
+    "V3_tree_h2_UDP_FLOOD_p02_R01": 120,
+    "V3_tree_h2_UDP_FLOOD_p03_R01": 228,
+    "V3_tree_h3_BENIGN_p01_R01": 156,
+    "V3_tree_h3_UDP_FLOOD_p01_R01": 156,
+    "V3_tree_h4_BENIGN_p03_R02": 228,
+    "V3_tree_h4_UDP_FLOOD_p03_R02": 228
+  },
+  "source_distributions": {
+    "host": {
+      "h1": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 174,
+            "max": 2.18920636177063,
+            "median": 2.0008068084716797,
+            "min": 1.811140775680542,
+            "p05": 1.8829962611198425,
+            "p95": 2.1009931683540346
+          },
+          "rx_bytes_per_packet": {
+            "count": 174,
+            "max": 234.0,
+            "median": 114.0,
+            "min": 65.6043956043956,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 174,
+            "max": 55485.27917989465,
+            "median": 8512.513362567644,
+            "min": 278.54165648868803,
+            "p05": 574.7076554879094,
+            "p95": 53490.82758769712
+          },
+          "rx_pps": {
+            "count": 174,
+            "max": 254.0417802321922,
+            "median": 78.82289628390569,
+            "min": 3.3909419050796803,
+            "p05": 6.996441023331071,
+            "p95": 229.60965657035004
+          },
+          "tx_bytes_per_packet": {
+            "count": 174,
+            "max": 204.33333333333334,
+            "median": 60.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 197.61666666666662
+          },
+          "tx_bytes_per_sec": {
+            "count": 174,
+            "max": 1897.336897110408,
+            "median": 62.742854063451205,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 1340.835102405374
+          },
+          "tx_pps": {
+            "count": 174,
+            "max": 9.991242217537694,
+            "median": 1.041621898275827,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 7.650366001772389
+          }
+        },
+        "rows": 174,
+        "zero_rx_pps_percent": 0.0
+      },
+      "h2": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 184,
+            "max": 2.2983639240264893,
+            "median": 2.000813364982605,
+            "min": 1.7038278579711914,
+            "p05": 1.8403741240501406,
+            "p95": 2.1627136945724486
+          },
+          "rx_bytes_per_packet": {
+            "count": 184,
+            "max": 234.0,
+            "median": 114.0,
+            "min": 0.0,
+            "p05": 77.91176470588235,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 184,
+            "max": 125140.70841541186,
+            "median": 16944.49270090513,
+            "min": 0.0,
+            "p05": 1099.1837201090664,
+            "p95": 89549.51698888718
+          },
+          "rx_pps": {
+            "count": 184,
+            "max": 676.090632317232,
+            "median": 131.4591731184148,
+            "min": 0.0,
+            "p05": 7.631503039255583,
+            "p95": 516.0076408802365
+          },
+          "tx_bytes_per_packet": {
+            "count": 184,
+            "max": 225.6,
+            "median": 63.333333333333336,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 225.6
+          },
+          "tx_bytes_per_sec": {
+            "count": 184,
+            "max": 14584.96669716976,
+            "median": 98.49110959524934,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 12870.162318462233
+          },
+          "tx_pps": {
+            "count": 184,
+            "max": 72.89025052027348,
+            "median": 1.6075513010490217,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 63.336997403678694
+          }
+        },
+        "rows": 184,
+        "zero_rx_pps_percent": 1.0869565217391304
+      },
+      "h3": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 89,
+            "max": 2.1243736743927,
+            "median": 2.000793933868408,
+            "min": 1.874171018600464,
+            "p05": 1.8874817848205567,
+            "p95": 2.117106819152832
+          },
+          "rx_bytes_per_packet": {
+            "count": 89,
+            "max": 234.0,
+            "median": 114.0,
+            "min": 65.85992217898833,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 89,
+            "max": 59785.34336774754,
+            "median": 16201.424130973784,
+            "min": 4058.699803235965,
+            "p05": 4228.577501843487,
+            "p95": 59765.11767281196
+          },
+          "rx_pps": {
+            "count": 89,
+            "max": 273.1580166605399,
+            "median": 240.3515381140827,
+            "min": 60.90155813782556,
+            "p05": 61.92685659447844,
+            "p95": 262.6721044690325
+          },
+          "tx_bytes_per_packet": {
+            "count": 89,
+            "max": 70.0,
+            "median": 60.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 60.0
+          },
+          "tx_bytes_per_sec": {
+            "count": 89,
+            "max": 175.11043583532663,
+            "median": 57.651985841419965,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 98.89340927319066
+          },
+          "tx_pps": {
+            "count": 89,
+            "max": 3.7658158244156255,
+            "median": 0.9610274779176176,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 1.5851615359339712
+          }
+        },
+        "rows": 89,
+        "zero_rx_pps_percent": 0.0
+      },
+      "h4": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 102,
+            "max": 2.139147996902466,
+            "median": 2.0006866455078125,
+            "min": 1.86928391456604,
+            "p05": 1.8863287568092348,
+            "p95": 2.1229810357093815
+          },
+          "rx_bytes_per_packet": {
+            "count": 102,
+            "max": 162.0,
+            "median": 98.89815418023886,
+            "min": 65.95238095238095,
+            "p05": 66.0,
+            "p95": 162.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 102,
+            "max": 97920.50387457748,
+            "median": 14604.690813778632,
+            "min": 799.8085480255562,
+            "p05": 5286.771789371437,
+            "p95": 86355.95245936619
+          },
+          "rx_pps": {
+            "count": 102,
+            "max": 604.4475547813423,
+            "median": 152.45197895688207,
+            "min": 7.998085480255562,
+            "p05": 52.00932060033018,
+            "p95": 533.287742609597
+          },
+          "tx_bytes_per_packet": {
+            "count": 102,
+            "max": 214.0,
+            "median": 194.16976127320953,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 204.33333333333334
+          },
+          "tx_bytes_per_sec": {
+            "count": 102,
+            "max": 14475.841402840975,
+            "median": 894.5963408217408,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 14142.998014541487
+          },
+          "tx_pps": {
+            "count": 102,
+            "max": 71.53644884967447,
+            "median": 4.248099835962071,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 69.92748118587993
+          }
+        },
+        "rows": 102,
+        "zero_rx_pps_percent": 0.0
+      }
+    },
+    "profile": {
+      "p00": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 94,
+            "max": 2.103082656860352,
+            "median": 2.0006874799728394,
+            "min": 1.918797492980957,
+            "p05": 1.925114059448242,
+            "p95": 2.0800353646278382
+          },
+          "rx_bytes_per_packet": {
+            "count": 94,
+            "max": 114.0,
+            "median": 80.125,
+            "min": 65.6043956043956,
+            "p05": 66.0,
+            "p95": 114.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 94,
+            "max": 13276.223564777552,
+            "median": 5904.4418094941375,
+            "min": 278.54165648868803,
+            "p05": 295.92418962669205,
+            "p95": 13218.897663966463
+          },
+          "rx_pps": {
+            "count": 94,
+            "max": 134.45921257650951,
+            "median": 89.46123953778996,
+            "min": 3.3909419050796803,
+            "p05": 3.6025553519771205,
+            "p95": 132.61137090275247
+          },
+          "tx_bytes_per_packet": {
+            "count": 94,
+            "max": 204.33333333333334,
+            "median": 67.5,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 204.33333333333334
+          },
+          "tx_bytes_per_sec": {
+            "count": 94,
+            "max": 1897.336897110408,
+            "median": 108.37420070653755,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 1398.8190677569623
+          },
+          "tx_pps": {
+            "count": 94,
+            "max": 9.991242217537694,
+            "median": 1.7812439431639007,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 8.602036379671201
+          }
+        },
+        "rows": 94,
+        "zero_rx_pps_percent": 0.0
+      },
+      "p01": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 179,
+            "max": 2.18920636177063,
+            "median": 2.000849485397339,
+            "min": 1.811140775680542,
+            "p05": 1.874352765083313,
+            "p95": 2.1202481031417846
+          },
+          "rx_bytes_per_packet": {
+            "count": 179,
+            "max": 234.0,
+            "median": 162.0,
+            "min": 65.85992217898833,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 179,
+            "max": 59785.34336774754,
+            "median": 16201.424130973784,
+            "min": 4058.699803235965,
+            "p05": 4345.86860851918,
+            "p95": 59748.75943468272
+          },
+          "rx_pps": {
+            "count": 179,
+            "max": 273.1580166605399,
+            "median": 157.5723239574595,
+            "min": 45.03194631487367,
+            "p05": 50.97145659635017,
+            "p95": 255.91567647844428
+          },
+          "tx_bytes_per_packet": {
+            "count": 179,
+            "max": 93.33333333333333,
+            "median": 60.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 65.0
+          },
+          "tx_bytes_per_sec": {
+            "count": 179,
+            "max": 699.784690822719,
+            "median": 59.83485265451551,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 130.11632907206382
+          },
+          "tx_pps": {
+            "count": 179,
+            "max": 7.497693115957703,
+            "median": 0.9975471014902068,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 2.4475227221365365
+          }
+        },
+        "rows": 179,
+        "zero_rx_pps_percent": 0.0
+      },
+      "p02": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 72,
+            "max": 2.2011890411376958,
+            "median": 2.0007113218307495,
+            "min": 1.82155179977417,
+            "p05": 1.859147000312805,
+            "p95": 2.1507620811462402
+          },
+          "rx_bytes_per_packet": {
+            "count": 72,
+            "max": 234.0,
+            "median": 96.6484485190409,
+            "min": 74.51162790697674,
+            "p05": 77.72857142857143,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 72,
+            "max": 90527.43975699355,
+            "median": 20189.791228386825,
+            "min": 1083.5053034642135,
+            "p05": 1310.7214395782069,
+            "p95": 84430.75142890152
+          },
+          "rx_pps": {
+            "count": 72,
+            "max": 408.28229442799375,
+            "median": 175.22071440338922,
+            "min": 13.628997527851745,
+            "p05": 16.529522348482637,
+            "p95": 407.80811375982427
+          },
+          "tx_bytes_per_packet": {
+            "count": 72,
+            "max": 225.6,
+            "median": 130.9189189189189,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 225.6
+          },
+          "tx_bytes_per_sec": {
+            "count": 72,
+            "max": 4010.236542253735,
+            "median": 1388.3891036064852,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 3946.6226901755085
+          },
+          "tx_pps": {
+            "count": 72,
+            "max": 18.99638352102243,
+            "median": 7.383132339606997,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 17.5281886158906
+          }
+        },
+        "rows": 72,
+        "zero_rx_pps_percent": 0.0
+      },
+      "p03": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 204,
+            "max": 2.2983639240264893,
+            "median": 2.000828981399536,
+            "min": 1.7038278579711914,
+            "p05": 1.8745307803153992,
+            "p95": 2.131880760192871
+          },
+          "rx_bytes_per_packet": {
+            "count": 204,
+            "max": 234.0,
+            "median": 117.61676646706587,
+            "min": 0.0,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 204,
+            "max": 125140.70841541186,
+            "median": 15794.441587993218,
+            "min": 0.0,
+            "p05": 981.6499936732648,
+            "p95": 89858.43983386313
+          },
+          "rx_pps": {
+            "count": 204,
+            "max": 676.090632317232,
+            "median": 151.18759744040938,
+            "min": 0.0,
+            "p05": 8.072703485537524,
+            "p95": 544.8415554030881
+          },
+          "tx_bytes_per_packet": {
+            "count": 204,
+            "max": 214.0,
+            "median": 70.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 204.33333333333334
+          },
+          "tx_bytes_per_sec": {
+            "count": 204,
+            "max": 14584.96669716976,
+            "median": 197.6828187529979,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 13873.539618527077
+          },
+          "tx_pps": {
+            "count": 204,
+            "max": 72.89025052027348,
+            "median": 2.9948315770813045,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 68.73290607547374
+          }
+        },
+        "rows": 204,
+        "zero_rx_pps_percent": 0.9803921568627451
+      }
+    },
+    "scenario": {
+      "BENIGN": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 272,
+            "max": 2.295107841491699,
+            "median": 2.00078022480011,
+            "min": 1.7304751873016355,
+            "p05": 1.874537742137909,
+            "p95": 2.130109202861786
+          },
+          "rx_bytes_per_packet": {
+            "count": 272,
+            "max": 234.0,
+            "median": 99.16363954276221,
+            "min": 0.0,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 272,
+            "max": 25678.03802065474,
+            "median": 6949.556456592136,
+            "min": 0.0,
+            "p05": 445.81654848831175,
+            "p95": 19365.366019530207
+          },
+          "rx_pps": {
+            "count": 272,
+            "max": 185.49912962139075,
+            "median": 58.496508827661,
+            "min": 0.0,
+            "p05": 5.372668307597086,
+            "p95": 173.61225513445703
+          },
+          "tx_bytes_per_packet": {
+            "count": 272,
+            "max": 225.6,
+            "median": 194.35555555555555,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 215.25
+          },
+          "tx_bytes_per_sec": {
+            "count": 272,
+            "max": 14584.96669716976,
+            "median": 1320.0340677850268,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 13722.904965639653
+          },
+          "tx_pps": {
+            "count": 272,
+            "max": 72.89025052027348,
+            "median": 7.426117445713263,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 68.31400928102529
+          }
+        },
+        "rows": 272,
+        "zero_rx_pps_percent": 0.7352941176470588
+      },
+      "UDP_FLOOD": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 277,
+            "max": 2.2983639240264893,
+            "median": 2.000812292098999,
+            "min": 1.7038278579711914,
+            "p05": 1.8880170822143554,
+            "p95": 2.1137739181518556
+          },
+          "rx_bytes_per_packet": {
+            "count": 277,
+            "max": 234.0,
+            "median": 114.0,
+            "min": 65.6043956043956,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 277,
+            "max": 125140.70841541186,
+            "median": 29328.352200226887,
+            "min": 5871.236771253001,
+            "p05": 7651.250820817764,
+            "p95": 87758.30189226638
+          },
+          "rx_pps": {
+            "count": 277,
+            "max": 676.090632317232,
+            "median": 240.5586109802536,
+            "min": 33.51648133820535,
+            "p05": 87.28378125901958,
+            "p95": 534.0701093784709
+          },
+          "tx_bytes_per_packet": {
+            "count": 277,
+            "max": 96.15384615384616,
+            "median": 60.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 65.0
+          },
+          "tx_bytes_per_sec": {
+            "count": 277,
+            "max": 701.6897720199316,
+            "median": 59.84935294539428,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 123.46749956891824
+          },
+          "tx_pps": {
+            "count": 277,
+            "max": 7.518104700213553,
+            "median": 0.9977420407650608,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 1.9994297226175257
+          }
+        },
+        "rows": 277,
+        "zero_rx_pps_percent": 0.0
+      }
+    },
+    "topology": {
+      "full_mesh": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 174,
+            "max": 2.2983639240264893,
+            "median": 2.0007859468460083,
+            "min": 1.7038278579711914,
+            "p05": 1.8419020295143127,
+            "p95": 2.162916100025177
+          },
+          "rx_bytes_per_packet": {
+            "count": 174,
+            "max": 234.0,
+            "median": 122.84788108791903,
+            "min": 65.6043956043956,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 174,
+            "max": 97920.50387457748,
+            "median": 13640.441856709378,
+            "min": 278.54165648868803,
+            "p05": 574.7281135620324,
+            "p95": 86030.64153476083
+          },
+          "rx_pps": {
+            "count": 174,
+            "max": 604.4475547813423,
+            "median": 95.30079726582116,
+            "min": 3.3909419050796803,
+            "p05": 6.996690078146481,
+            "p95": 425.9177913820759
+          },
+          "tx_bytes_per_packet": {
+            "count": 174,
+            "max": 215.25,
+            "median": 60.0,
+            "min": 46.5,
+            "p05": 60.0,
+            "p95": 213.33333333333334
+          },
+          "tx_bytes_per_sec": {
+            "count": 174,
+            "max": 13706.454737456512,
+            "median": 92.46055953732078,
+            "min": 52.21105271691385,
+            "p05": 56.677174580177464,
+            "p95": 10094.201227843843
+          },
+          "tx_pps": {
+            "count": 174,
+            "max": 68.45174222584039,
+            "median": 1.5024837350024522,
+            "min": 0.8701842119485641,
+            "p05": 0.9446195763362911,
+            "p95": 50.67741455378249
+          }
+        },
+        "rows": 174,
+        "zero_rx_pps_percent": 0.0
+      },
+      "star": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 177,
+            "max": 2.080274105072021,
+            "median": 2.0007710456848145,
+            "min": 1.9563322067260744,
+            "p05": 2.0000015735626224,
+            "p95": 2.0040844917297362
+          },
+          "rx_bytes_per_packet": {
+            "count": 177,
+            "max": 234.0,
+            "median": 114.0,
+            "min": 66.0,
+            "p05": 66.0,
+            "p95": 234.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 177,
+            "max": 125140.70841541186,
+            "median": 15025.135821499873,
+            "min": 574.7019138303905,
+            "p05": 754.8272789072846,
+            "p95": 66090.40482727738
+          },
+          "rx_pps": {
+            "count": 177,
+            "max": 534.7893522026149,
+            "median": 128.93931622261442,
+            "min": 6.497056089616224,
+            "p05": 6.998605052552913,
+            "p95": 407.8954004115681
+          },
+          "tx_bytes_per_packet": {
+            "count": 177,
+            "max": 225.6,
+            "median": 0.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 225.6
+          },
+          "tx_bytes_per_sec": {
+            "count": 177,
+            "max": 12890.897372985355,
+            "median": 0.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 11661.881879022234
+          },
+          "tx_pps": {
+            "count": 177,
+            "max": 63.48472027179852,
+            "median": 0.0,
+            "min": 0.0,
+            "p05": 0.0,
+            "p95": 57.18615566586881
+          }
+        },
+        "rows": 177,
+        "zero_rx_pps_percent": 0.0
+      },
+      "tree": {
+        "measurements": {
+          "interval_seconds": {
+            "count": 198,
+            "max": 2.18920636177063,
+            "median": 2.001022458076477,
+            "min": 1.811140775680542,
+            "p05": 1.8745429635047912,
+            "p95": 2.1241681218147277
+          },
+          "rx_bytes_per_packet": {
+            "count": 198,
+            "max": 162.0,
+            "median": 79.52941176470588,
+            "min": 0.0,
+            "p05": 66.0,
+            "p95": 162.0
+          },
+          "rx_bytes_per_sec": {
+            "count": 198,
+            "max": 77074.33208416445,
+            "median": 10450.266036885077,
+            "min": 0.0,
+            "p05": 621.1722388378652,
+            "p95": 44418.18488812553
+          },
+          "rx_pps": {
+            "count": 198,
+            "max": 676.090632317232,
+            "median": 129.3434005261633,
+            "min": 0.0,
+            "p05": 7.704562695945329,
+            "p95": 514.9636713793798
+          },
+          "tx_bytes_per_packet": {
+            "count": 198,
+            "max": 215.25,
+            "median": 60.0,
+            "min": 46.0,
+            "p05": 60.0,
+            "p95": 202.35616438356163
+          },
+          "tx_bytes_per_sec": {
+            "count": 198,
+            "max": 14584.96669716976,
+            "median": 85.16764020238051,
+            "min": 54.814384836221656,
+            "p05": 57.565473625241054,
+            "p95": 13884.135132468698
+          },
+          "tx_pps": {
+            "count": 198,
+            "max": 72.89025052027348,
+            "median": 1.4508365571686206,
+            "min": 0.9135730806036944,
+            "p05": 0.9594245604206842,
+            "p95": 68.76578381524646
+          }
+        },
+        "rows": 198,
+        "zero_rx_pps_percent": 1.0101010101010102
+      }
+    }
+  },
+  "source_rows": 549,
+  "source_rows_by_experiment": {
+    "V3_full_mesh_h1_BENIGN_p00_R01": 13,
+    "V3_full_mesh_h1_BENIGN_p01_R01": 13,
+    "V3_full_mesh_h1_UDP_FLOOD_p00_R01": 13,
+    "V3_full_mesh_h1_UDP_FLOOD_p01_R01": 13,
+    "V3_full_mesh_h2_BENIGN_p02_R01": 13,
+    "V3_full_mesh_h2_BENIGN_p03_R01": 16,
+    "V3_full_mesh_h2_UDP_FLOOD_p02_R01": 13,
+    "V3_full_mesh_h2_UDP_FLOOD_p03_R01": 16,
+    "V3_full_mesh_h3_BENIGN_p01_R01": 13,
+    "V3_full_mesh_h3_UDP_FLOOD_p01_R01": 13,
+    "V3_full_mesh_h4_BENIGN_p03_R02": 19,
+    "V3_full_mesh_h4_UDP_FLOOD_p03_R02": 19,
+    "V3_star_h1_BENIGN_p00_R01": 10,
+    "V3_star_h1_BENIGN_p01_R01": 13,
+    "V3_star_h1_UDP_FLOOD_p00_R01": 10,
+    "V3_star_h1_UDP_FLOOD_p01_R01": 13,
+    "V3_star_h2_BENIGN_p02_R01": 13,
+    "V3_star_h2_BENIGN_p03_R01": 16,
+    "V3_star_h2_UDP_FLOOD_p00_R01": 10,
+    "V3_star_h2_UDP_FLOOD_p02_R01": 13,
+    "V3_star_h2_UDP_FLOOD_p03_R01": 16,
+    "V3_star_h3_BENIGN_p01_R01": 18,
+    "V3_star_h3_UDP_FLOOD_p01_R01": 19,
+    "V3_star_h4_BENIGN_p03_R01": 16,
+    "V3_star_h4_UDP_FLOOD_p03_R02": 10,
+    "V3_tree_h1_BENIGN_p00_R01": 19,
+    "V3_tree_h1_BENIGN_p01_R01": 19,
+    "V3_tree_h1_UDP_FLOOD_p00_R01": 19,
+    "V3_tree_h1_UDP_FLOOD_p01_R01": 19,
+    "V3_tree_h2_BENIGN_p02_R01": 10,
+    "V3_tree_h2_BENIGN_p03_R01": 19,
+    "V3_tree_h2_UDP_FLOOD_p02_R01": 10,
+    "V3_tree_h2_UDP_FLOOD_p03_R01": 19,
+    "V3_tree_h3_BENIGN_p01_R01": 13,
+    "V3_tree_h3_UDP_FLOOD_p01_R01": 13,
+    "V3_tree_h4_BENIGN_p03_R02": 19,
+    "V3_tree_h4_UDP_FLOOD_p03_R02": 19
+  },
+  "source_selection": "manifest source_facing dpid/port derived from topology link order and runtime ofport check; never selected by traffic magnitude",
+  "source_view_path": "/home/beepbeep-kun/Anti_sdn/data/v3/source_windows_v1.csv",
+  "status": "AUDITED",
+  "version": "sdn_dataset_v3_audit_v1"
+}

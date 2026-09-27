@@ -1,0 +1,253 @@
+{
+  "active_end_epoch": 1790483022.4206955,
+  "active_end_timestamp": "2026-09-27T04:23:42.420696Z",
+  "active_start_epoch": 1790482994.4206955,
+  "active_start_timestamp": "2026-09-27T04:23:14.420696Z",
+  "attack_source_host": "h1",
+  "completed_at": "2026-09-27T04:23:45.849619Z",
+  "cooldown_seconds": 1.0,
+  "dataset_path": "/home/beepbeep-kun/Anti_sdn/data/v3/windows_v1.csv",
+  "exact_command": "/home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python /home/beepbeep-kun/Anti_sdn/experiments/v3_traffic_worker.py --spec-json '{\"parameters\": {\"burst_off_seconds\": 0, \"burst_on_seconds\": 0, \"destination_port\": 9000, \"duration_seconds\": 28, \"nominal_wire_bytes\": 114, \"payload_bytes\": 72, \"rate_factor\": 0.94, \"requested_pps\": 207, \"seed\": 74421280, \"target_ip\": \"10.0.0.100\"}, \"profile_behavior\": \"steady_mid\", \"scenario_label\": \"UDP_FLOOD\"}'",
+  "expected_topology": {
+    "directed_links": 0,
+    "switches": 1
+  },
+  "experiment_id": "V3_star_h1_UDP_FLOOD_p01_R01",
+  "holdout_keys": {
+    "host": "h1",
+    "profile": "p01",
+    "run": 1,
+    "topology": "star"
+  },
+  "log_path": "/home/beepbeep-kun/Anti_sdn/data/v3/logs/V3_star_h1_UDP_FLOOD_p01_R01.log",
+  "namespace_command": "/usr/local/bin/mnexec -a 100743 /home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python /home/beepbeep-kun/Anti_sdn/experiments/v3_traffic_worker.py --spec-json '{\"parameters\": {\"burst_off_seconds\": 0, \"burst_on_seconds\": 0, \"destination_port\": 9000, \"duration_seconds\": 28, \"nominal_wire_bytes\": 114, \"payload_bytes\": 72, \"rate_factor\": 0.94, \"requested_pps\": 207, \"seed\": 74421280, \"target_ip\": \"10.0.0.100\"}, \"profile_behavior\": \"steady_mid\", \"scenario_label\": \"UDP_FLOOD\"}'",
+  "parameters": {
+    "burst_off_seconds": 0,
+    "burst_on_seconds": 0,
+    "destination_port": 9000,
+    "duration_seconds": 28,
+    "nominal_wire_bytes": 114,
+    "payload_bytes": 72,
+    "rate_factor": 0.94,
+    "requested_pps": 207,
+    "seed": 74421280,
+    "target_ip": "10.0.0.100"
+  },
+  "post_run_health": {
+    "http_server": {
+      "command": "http_server",
+      "http_status": "200",
+      "ok": true
+    },
+    "ping_server": {
+      "command": "ping_server",
+      "ok": true,
+      "output": "PING 10.0.0.100 (10.0.0.100) 56(84) bytes of data.\r\n64 bytes from 10.0.0.100: icmp_seq=1 ttl=64 time=8.36 ms\r\n64 bytes from 10.0.0.100: icmp_seq=2 ttl=64 time=4.11 ms\r\n64 bytes from 10.0.0.100: icmp_seq=3 ttl=64 time=4.18 ms\r\n\r\n--- 10.0.0.100 ping statistics ---\r\n3 packets transmitted, 3 received, 0% packet loss, time 2003ms\r\nrtt min/avg/max/mdev = 4.106/5.547/8.359/1.988 ms\r\n"
+    },
+    "pingall": {
+      "command": "pingall",
+      "ok": true,
+      "packet_loss_percent": 0.0
+    },
+    "topology": {
+      "config_version": "sdn_topology_config_v1",
+      "directed_links": 0,
+      "error": null,
+      "expected_directed_links": 0,
+      "expected_switches": 1,
+      "in_sync": true,
+      "message": "star topology is running and stable",
+      "mininet_running": true,
+      "runtime_topology": "star",
+      "ryu_available": true,
+      "selected_topology": "star",
+      "state": "ready",
+      "status": "ready",
+      "supported_topologies": [
+        {
+          "directed_links": 0,
+          "edges": [],
+          "id": "star",
+          "label": "Star",
+          "physical_links": 0,
+          "switches": 1
+        },
+        {
+          "directed_links": 4,
+          "edges": [
+            [
+              "s2",
+              "s1"
+            ],
+            [
+              "s3",
+              "s1"
+            ]
+          ],
+          "id": "tree",
+          "label": "Tree",
+          "physical_links": 2,
+          "switches": 3
+        },
+        {
+          "directed_links": 12,
+          "edges": [
+            [
+              "s1",
+              "s2"
+            ],
+            [
+              "s1",
+              "s3"
+            ],
+            [
+              "s1",
+              "s4"
+            ],
+            [
+              "s2",
+              "s3"
+            ],
+            [
+              "s2",
+              "s4"
+            ],
+            [
+              "s3",
+              "s4"
+            ]
+          ],
+          "id": "full_mesh",
+          "label": "Full Mesh",
+          "physical_links": 6,
+          "switches": 4
+        }
+      ],
+      "switches": 1,
+      "topology": "star",
+      "topology_stable_seconds": 9204.004320976,
+      "updated_at": "2026-09-27T01:50:19.540567+00:00"
+    }
+  },
+  "post_run_health_ok": true,
+  "profile_behavior": "steady_mid",
+  "profile_id": "p01",
+  "recorded_windows": {
+    "context_rows": 65,
+    "source_rows": 13
+  },
+  "recorder_before": {
+    "datapaths": 1,
+    "directed_links": 0,
+    "ready": true,
+    "stable_seconds": 9168.049634620002,
+    "topology": "star",
+    "updated_at": 1790482991.7050254,
+    "version": "sdn_dataset_status_v1"
+  },
+  "replicate": 1,
+  "runtime_source_port_check": {
+    "bridges": [
+      "s1"
+    ],
+    "interface": "s1-eth1",
+    "ofport": 1
+  },
+  "scenario_label": "UDP_FLOOD",
+  "source_facing": {
+    "dpid": 1,
+    "interface": "s1-eth1",
+    "port": 1
+  },
+  "start_epoch": 1790482992.4206955,
+  "start_timestamp": "2026-09-27T04:23:12.420696Z",
+  "state_path": "/tmp/sdn_experiment_state.json",
+  "status": "COMPLETE",
+  "status_path": "/tmp/sdn_dataset_status.json",
+  "target_host": "h_server",
+  "target_ip": "10.0.0.100",
+  "topology": "star",
+  "topology_before": {
+    "config_version": "sdn_topology_config_v1",
+    "directed_links": 0,
+    "error": null,
+    "expected_directed_links": 0,
+    "expected_switches": 1,
+    "in_sync": true,
+    "message": "star topology is running and stable",
+    "mininet_running": true,
+    "runtime_topology": "star",
+    "ryu_available": true,
+    "selected_topology": "star",
+    "state": "ready",
+    "status": "ready",
+    "supported_topologies": [
+      {
+        "directed_links": 0,
+        "edges": [],
+        "id": "star",
+        "label": "Star",
+        "physical_links": 0,
+        "switches": 1
+      },
+      {
+        "directed_links": 4,
+        "edges": [
+          [
+            "s2",
+            "s1"
+          ],
+          [
+            "s3",
+            "s1"
+          ]
+        ],
+        "id": "tree",
+        "label": "Tree",
+        "physical_links": 2,
+        "switches": 3
+      },
+      {
+        "directed_links": 12,
+        "edges": [
+          [
+            "s1",
+            "s2"
+          ],
+          [
+            "s1",
+            "s3"
+          ],
+          [
+            "s1",
+            "s4"
+          ],
+          [
+            "s2",
+            "s3"
+          ],
+          [
+            "s2",
+            "s4"
+          ],
+          [
+            "s3",
+            "s4"
+          ]
+        ],
+        "id": "full_mesh",
+        "label": "Full Mesh",
+        "physical_links": 6,
+        "switches": 4
+      }
+    ],
+    "switches": 1,
+    "topology": "star",
+    "topology_stable_seconds": 9168.955014886,
+    "updated_at": "2026-09-27T01:50:19.540567+00:00"
+  },
+  "traffic_source_host": "h1",
+  "udp_sink_namespace_command": "/usr/local/bin/mnexec -a 100751 /home/beepbeep-kun/.pyenv/versions/sdn-env38/bin/python /home/beepbeep-kun/Anti_sdn/experiments/v3_traffic_worker.py --udp-sink --duration 33",
+  "version": "sdn_dataset_v3_manifest_v1",
+  "warmup_seconds": 1.0
+}

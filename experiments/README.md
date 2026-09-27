@@ -2,10 +2,11 @@
 
 `traffic_experiment_driver.py` runs one bounded traffic scenario in an
 already-running Mininet network. All targets are fixed inside the local
-experiment network. The driver refuses to start until the recorder reports four
-datapaths, twelve directed links, five seconds of topology stability, and one
-complete post-readiness polling window. An exclusive lock prevents overlapping
-experiments.
+experiment network. The driver reads the persisted Star, Tree, or Full Mesh profile and refuses to
+start until the recorder reports that exact switch/link graph, five seconds of
+topology stability, and one complete post-readiness polling window. `--topology`
+asserts the currently deployed profile; it does not change Mininet. An exclusive
+lock prevents overlapping experiments.
 
 Start Ryu with recording and its atomic experiment-state interface enabled:
 
@@ -27,9 +28,10 @@ Run one scenario at a time, for example:
 
 ```bash
 sudo experiments/traffic_experiment_driver.py BENIGN \
-  --experiment-id pilot-benign-01 --duration 20
+  --topology star --experiment-id pilot-benign-01 --duration 20
 sudo experiments/traffic_experiment_driver.py UDP_FLOOD \
-  --experiment-id pilot-udp-01 --duration 15 --udp-pps 500
+  --topology star --experiment-id pilot-udp-01 --duration 15 --udp-pps 750 \
+  --require-ml
 sudo experiments/traffic_experiment_driver.py TCP_SYN_LIKE \
   --experiment-id pilot-syn-01 --duration 15 --syn-pps 250
 sudo experiments/traffic_experiment_driver.py HTTP_FLOOD \
@@ -64,6 +66,9 @@ Relevant options:
 --duration SECONDS           default: 15
 --cooldown SECONDS           default: 5
 --source-host HOST           override the scenario source
+--topology PROFILE           assert star, tree, or full_mesh is selected and ready
+--require-ml                 fail unless this run produces a new source-IP ML event
+--expect-block               also fail unless this run produces a new block event
 --udp-pps PPS                default: 500, maximum: 10000
 --syn-pps PPS                default: 250, maximum: 10000
 --http-concurrency COUNT     default: 4, maximum: 32
@@ -79,3 +84,10 @@ The `finally` path always publishes IDLE state and terminates the generator.
 This driver creates validation or controlled collection traffic. It does not
 train a model, run inference, assign labels from predictions, or claim attack
 detection accuracy.
+
+For a bounded mitigation-path check without changing production defaults, start
+Ryu with test-only `SDN_WARMUP_SECONDS=0`, `SDN_MIN_PPS_CHECK=100`,
+`SDN_HARD_LIMIT_PPS=600`, and `SDN_BLOCK_DURATION=15`; then use 750 pps with
+`--require-ml --expect-block`. The manifest records the exact ML input vector,
+prediction, DPID/port, source IP, and any new attack/block event. The default
+controller values remain 60, 500, 10000, and 120 respectively.
