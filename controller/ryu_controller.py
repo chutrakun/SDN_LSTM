@@ -620,6 +620,11 @@ import tensorflow as tf
 import joblib
 import warnings
 
+from ml.sdn_lstm_v3_features import (
+    FEATURES as V3_FEATURES, SCHEMA_VERSION as V3_SCHEMA_VERSION,
+    feature_vector as v3_feature_vector,
+)
+
 warnings.filterwarnings("ignore")
 
 
@@ -700,9 +705,9 @@ LE_PATH = os.path.join(
 # DDoS SETTINGS
 # ---------------------------------------------------------------------
 
-BLOCK_THRESHOLD = 0.90
+BLOCK_THRESHOLD = float(os.environ.get("SDN_BLOCK_THRESHOLD", "0.90"))
 
-BLOCK_DURATION = 120
+BLOCK_DURATION = int(os.environ.get("SDN_BLOCK_DURATION", "120"))
 
 STATS_INTERVAL = 2
 
@@ -711,9 +716,11 @@ DASH_URL = os.environ.get("BACKEND_URL", "http://127.0.0.1:%s" % BACKEND_PORT)
 
 UNBLOCK_IPC_PATH = os.environ.get("SDN_UNBLOCK_IPC_PATH", "/tmp/unblock_requests.txt")
 
-WARMUP_SECONDS = 60
+WARMUP_SECONDS = float(os.environ.get("SDN_WARMUP_SECONDS", "60"))
 
-MIN_PPS_CHECK = 500
+MIN_PPS_CHECK = float(os.environ.get("SDN_MIN_PPS_CHECK", "500"))
+
+HARD_LIMIT_PPS = float(os.environ.get("SDN_HARD_LIMIT_PPS", "10000"))
 
 CONSECUTIVE_HITS = 2
 
@@ -730,9 +737,6 @@ LOCAL_PORT = 0xfffffffe
 
 FLOOD_TOPOLOGY_SETTLE_SECONDS = 5
 
-DATASET_REQUIRED_SWITCHES = 4
-
-DATASET_REQUIRED_DIRECTED_LINKS = 12
 
 
 # ---------------------------------------------------------------------
@@ -785,6 +789,7 @@ except Exception as e:
 
 
 from collector.sdn_window_recorder import SdnWindowCsvRecorder
+from collector.dataset_topology_readiness import recorder_topology_ready
 
 
 # ---------------------------------------------------------------------
@@ -937,6 +942,9 @@ class IntelligentController(app_manager.RyuApp):
         )
 
         self.dataset_topology_ready_since = None
+        self.dataset_topology_identity = None
+        self.dataset_topology_observation = None
+        self.dataset_topology_observed_at = None
 
         # =============================================================
         # BLOCKED IP
@@ -1001,6 +1009,12 @@ class IntelligentController(app_manager.RyuApp):
         self.le = None
 
         self.active_model_id = None
+
+        self.model_schema_version = "legacy_cic_flow_v1"
+
+        self.model_sequence_length = 1
+
+        self.ml_sequences = {}
 
         self._load_active_model()
 
@@ -1172,6 +1186,9 @@ class IntelligentController(app_manager.RyuApp):
     )
     def switch_enter_handler(self, ev):
 
+        self.ml_sequences.clear()
+        self.alert_counts.clear()
+
         LOG.info(
             "🟢 Topology switch enter"
         )
@@ -1185,6 +1202,9 @@ class IntelligentController(app_manager.RyuApp):
     )
     def switch_leave_handler(self, ev):
 
+        self.ml_sequences.clear()
+        self.alert_counts.clear()
+
         LOG.info(
             "🔴 Topology switch leave"
         )
@@ -1197,6 +1217,9 @@ class IntelligentController(app_manager.RyuApp):
         event.EventLinkAdd
     )
     def link_add_handler(self, ev):
+
+        self.ml_sequences.clear()
+        self.alert_counts.clear()
 
         link = ev.link
 
@@ -1234,6 +1257,9 @@ class IntelligentController(app_manager.RyuApp):
         event.EventLinkDelete
     )
     def link_delete_handler(self, ev):
+
+        self.ml_sequences.clear()
+        self.alert_counts.clear()
 
         link = ev.link
 
@@ -1642,10 +1668,18 @@ class IntelligentController(app_manager.RyuApp):
             and out_port != ofp.OFPP_NORMAL
         ):
 
-            match = parser.OFPMatch(
-                in_port=in_port,
-                eth_dst=dst_mac
-            )
+            match_fields = {
+                "in_port": in_port,
+                "eth_dst": dst_mac,
+                "eth_type": eth.ethertype,
+            }
+            if ip_pkt:
+                match_fields["ip_proto"] = ip_pkt.proto
+                if tcp_pkt:
+                    match_fields["tcp_dst"] = tcp_pkt.dst_port
+                elif udp_pkt:
+                    match_fields["udp_dst"] = udp_pkt.dst_port
+            match = parser.OFPMatch(**match_fields)
 
             self._add_flow(
                 dp,
@@ -2033,22 +2067,42 @@ class IntelligentController(app_manager.RyuApp):
             for neighbors in self.topology.values()
         )
 
-        stable_seconds = max(
-            0.0,
-            time.monotonic() - self.topology_last_change,
+        now_monotonic = time.monotonic()
+        topology_edges = {
+            (src, dst): port
+            for src, neighbors in self.topology.items()
+            for dst, port in neighbors.items()
+        }
+        topology_ready, identity = recorder_topology_ready(
+            self.datapaths,
+            topology_edges,
+            max(0.0, now_monotonic - self.topology_last_change),
+            required_stable_seconds=FLOOD_TOPOLOGY_SETTLE_SECONDS,
         )
-
+        observation = (
+            frozenset(self.datapaths),
+            frozenset(topology_edges.items()),
+            identity,
+        )
+        if observation != self.dataset_topology_observation:
+            self.dataset_topology_observation = observation
+            self.dataset_topology_observed_at = now_monotonic
+        stable_seconds = min(
+            max(0.0, now_monotonic - self.topology_last_change),
+            now_monotonic - self.dataset_topology_observed_at,
+        )
         topology_ready = (
-            len(self.datapaths) == DATASET_REQUIRED_SWITCHES
-            and directed_links == DATASET_REQUIRED_DIRECTED_LINKS
+            topology_ready
             and stable_seconds >= FLOOD_TOPOLOGY_SETTLE_SECONDS
         )
 
-        if not topology_ready:
+        if not topology_ready or identity != self.dataset_topology_identity:
 
             self.dataset_topology_ready_since = None
 
-        elif self.dataset_topology_ready_since is None:
+        self.dataset_topology_identity = identity if topology_ready else None
+
+        if topology_ready and self.dataset_topology_ready_since is None:
 
             self.dataset_topology_ready_since = time.time()
 
@@ -2066,6 +2120,7 @@ class IntelligentController(app_manager.RyuApp):
 
         self.dataset_recorder.update_topology_status(
             ready=window_ready,
+            topology=identity[0] if identity is not None else None,
             datapaths=len(self.datapaths),
             directed_links=directed_links,
             stable_seconds=stable_seconds,
@@ -2236,6 +2291,7 @@ class IntelligentController(app_manager.RyuApp):
                             display_bps / 1024,
                             1
                         ),
+                        "db_writer_active": HAS_DB,
                     },
                 )
 
@@ -2273,6 +2329,7 @@ class IntelligentController(app_manager.RyuApp):
                 if (
                     not is_blocked
                     and detect_pps
+                    and self._is_host_port(dpid, port)
                 ):
 
                     if (
@@ -2309,6 +2366,10 @@ class IntelligentController(app_manager.RyuApp):
                             byte_count,
                             ctx["dst_port"],
                             ctx["proto"],
+                            tx_pps,
+                            tx_bps,
+                            tx_packets_delta,
+                            tx_bytes_delta,
                         )
 
                     else:
@@ -2317,6 +2378,12 @@ class IntelligentController(app_manager.RyuApp):
                             key,
                             None
                         )
+
+                        if self.model_schema_version == V3_SCHEMA_VERSION:
+                            self.ml_sequences.pop(
+                                key,
+                                None
+                            )
 
             self.prev_stats[key] = {
                 "time": now,
@@ -2341,6 +2408,10 @@ class IntelligentController(app_manager.RyuApp):
         byte_count,
         dst_port,
         protocol,
+        tx_pps=0,
+        tx_bps=0,
+        tx_pkt_count=0,
+        tx_byte_count=0,
     ):
 
         key = (
@@ -2375,6 +2446,9 @@ class IntelligentController(app_manager.RyuApp):
                         0.99,
                         pps,
                         bps,
+                        block_reason="fallback_threshold",
+                        prediction_label="MODEL_UNAVAILABLE",
+                        prediction_confidence=None,
                     )
 
             return
@@ -2398,19 +2472,33 @@ class IntelligentController(app_manager.RyuApp):
                 )
             )
 
-            features = np.array(
-                [[
-                    dst_port,
-                    protocol,
-                    duration_us,
-                    pkt_count,
-                    0,
-                    byte_count,
-                    0,
-                    bps,
-                    pps,
-                    iat_mean,
-                ]]
+            feature_sequence = None
+
+            if self.model_schema_version == V3_SCHEMA_VERSION:
+                feature_values = v3_feature_vector(
+                    duration, pkt_count, tx_pkt_count,
+                    byte_count, tx_byte_count,
+                    bps, tx_bps, pps, tx_pps,
+                ).tolist()
+                sequence = self.ml_sequences.setdefault(
+                    key,
+                    deque(maxlen=self.model_sequence_length),
+                )
+                sequence.append(feature_values)
+                if len(sequence) < self.model_sequence_length:
+                    return
+                feature_sequence = list(sequence)
+                features = np.asarray(feature_sequence)
+            else:
+                feature_values = [
+                    dst_port, protocol, duration_us, pkt_count, 0,
+                    byte_count, 0, bps, pps, iat_mean,
+                ]
+                features = np.array([feature_values])
+            LOG.info(
+                "[LSTM_INPUT] s%s:%s ip=%s features=%s",
+                dp.id, port, self.port_ip_map.get(key),
+                [round(float(value), 4) for value in feature_values],
             )
 
             if self.scaler is None:
@@ -2427,11 +2515,7 @@ class IntelligentController(app_manager.RyuApp):
 
             lstm_input = np.reshape(
                 scaled,
-                (
-                    1,
-                    1,
-                    scaled.shape[1]
-                )
+                (1, scaled.shape[0], scaled.shape[1])
             )
 
             pred = self.model.predict(
@@ -2484,8 +2568,26 @@ class IntelligentController(app_manager.RyuApp):
                 "/api/ml",
                 {
                     "port": port,
+                    "dpid": dp.id,
+                    "ip": self.port_ip_map.get(key),
                     "pred": label,
                     "conf": conf,
+                    "pps": pps,
+                    "features": [round(float(value), 6) for value in feature_values],
+                    "feature_schema": self.model_schema_version,
+                    "feature_names": (
+                        list(V3_FEATURES)
+                        if self.model_schema_version == V3_SCHEMA_VERSION
+                        else []
+                    ),
+                    "feature_sequence": feature_sequence,
+                    "model_id": self.active_model_id,
+                    "ml_threshold": BLOCK_THRESHOLD,
+                    "hard_limit_threshold_pps": HARD_LIMIT_PPS,
+                    "ml_block_eligible": (
+                        conf >= BLOCK_THRESHOLD and label.lower() != "benign"
+                    ),
+                    "hard_limit_exceeded": pps > HARD_LIMIT_PPS,
                 },
             )
 
@@ -2500,7 +2602,7 @@ class IntelligentController(app_manager.RyuApp):
                     label.lower() != "benign"
                 )
                 or
-                pps > 10000
+                pps > HARD_LIMIT_PPS
             )
 
             if is_attack:
@@ -2526,7 +2628,7 @@ class IntelligentController(app_manager.RyuApp):
                 ):
 
                     if (
-                        pps > 10000
+                        pps > HARD_LIMIT_PPS
                         and
                         (
                             conf < BLOCK_THRESHOLD
@@ -2546,9 +2648,12 @@ class IntelligentController(app_manager.RyuApp):
                             dp,
                             port,
                             "DDoS-Anomaly",
-                            0.99,
+                            conf,
                             pps,
                             bps,
+                            block_reason="hard_limit",
+                            prediction_label=label,
+                            prediction_confidence=conf,
                         )
 
                     else:
@@ -2560,6 +2665,9 @@ class IntelligentController(app_manager.RyuApp):
                             conf,
                             pps,
                             bps,
+                            block_reason="ml_threshold",
+                            prediction_label=label,
+                            prediction_confidence=conf,
                         )
 
             else:
@@ -2588,6 +2696,9 @@ class IntelligentController(app_manager.RyuApp):
         conf,
         pps,
         bps,
+        block_reason,
+        prediction_label,
+        prediction_confidence,
     ):
 
         key = (
@@ -2610,9 +2721,15 @@ class IntelligentController(app_manager.RyuApp):
             return
 
         LOG.warning(
-            "🚨 AI Prediction: %s conf=%.4f src_ip=%s",
-            label,
-            conf,
+            "[BLOCK_DECISION] reason=%s pred=%s pred_conf=%s "
+            "ml_threshold=%.4f pps=%.1f hard_limit=%.1f src_ip=%s",
+            block_reason,
+            prediction_label,
+            ("none" if prediction_confidence is None
+             else "%.4f" % prediction_confidence),
+            BLOCK_THRESHOLD,
+            pps,
+            HARD_LIMIT_PPS,
             src_ip,
         )
 
@@ -2624,14 +2741,16 @@ class IntelligentController(app_manager.RyuApp):
             self._rate_limit_ip(
                 src_ip,
                 port,
-                conf
+                conf,
+                block_reason
             )
         else:
             self._block_ip(
                 src_ip,
                 port,
                 conf,
-                label
+                label,
+                block_reason
             )
 
         # =============================================================
@@ -2656,6 +2775,8 @@ class IntelligentController(app_manager.RyuApp):
         # DATABASE
         # =============================================================
 
+        db_persisted = False
+
         if HAS_DB:
 
             try:
@@ -2668,6 +2789,13 @@ class IntelligentController(app_manager.RyuApp):
                     note=label,
                     attack_type=label,
                     dpid=dp.id,
+                    block_reason=block_reason,
+                    prediction_label=prediction_label,
+                    prediction_confidence=prediction_confidence,
+                    ml_threshold=BLOCK_THRESHOLD,
+                    hard_limit_threshold=HARD_LIMIT_PPS,
+                    model_id=self.active_model_id,
+                    model_schema=self.model_schema_version,
                 )
 
                 db.block_port(
@@ -2675,6 +2803,8 @@ class IntelligentController(app_manager.RyuApp):
                     conf,
                     BLOCK_DURATION
                 )
+
+                db_persisted = True
 
             except Exception as e:
 
@@ -2693,14 +2823,21 @@ class IntelligentController(app_manager.RyuApp):
                 "port": port,
                 "ip": src_ip,
                 "label": label,
-                "conf": round(
-                    conf,
-                    2
-                ),
+                "conf": conf,
                 "pps": round(
                     pps,
                     1
                 ),
+                "dpid": dp.id,
+                "block_duration": BLOCK_DURATION,
+                "db_persisted": db_persisted,
+                "block_reason": block_reason,
+                "prediction_label": prediction_label,
+                "prediction_confidence": prediction_confidence,
+                "ml_threshold": BLOCK_THRESHOLD,
+                "hard_limit_threshold_pps": HARD_LIMIT_PPS,
+                "model_id": self.active_model_id,
+                "model_schema": self.model_schema_version,
             },
         )
 
@@ -2718,7 +2855,8 @@ class IntelligentController(app_manager.RyuApp):
         src_ip,
         port,
         conf,
-        label=""
+        label="",
+        block_reason="unknown"
     ):
         """
         Block source IP dynamically on ALL connected switches.
@@ -2779,6 +2917,7 @@ class IntelligentController(app_manager.RyuApp):
             "dpid": None,
             "port": port,
             "label": label,
+            "block_reason": block_reason,
         }
 
         LOG.warning(
@@ -2796,7 +2935,8 @@ class IntelligentController(app_manager.RyuApp):
         self,
         src_ip,
         port,
-        conf
+        conf,
+        block_reason="ml_threshold"
     ):
         """
         Keep the original UDPLag behavior but make it topology-safe.
@@ -2820,6 +2960,7 @@ class IntelligentController(app_manager.RyuApp):
             "dpid": None,
             "port": port,
             "label": "UDPLag",
+            "block_reason": block_reason,
         }
 
         for dpid, dp in list(
@@ -3115,6 +3256,26 @@ class IntelligentController(app_manager.RyuApp):
                 else None
             )
 
+            self.model_schema_version = getattr(
+                self.scaler, "sdn_schema_version", "legacy_cic_flow_v1"
+            )
+            self.model_sequence_length = int(self.model.input_shape[1])
+            self.ml_sequences = {}
+
+            if self.model_schema_version == V3_SCHEMA_VERSION:
+                artifact_features = tuple(getattr(
+                    self.scaler, "sdn_feature_names", ()
+                ))
+                if (
+                    artifact_features != tuple(V3_FEATURES)
+                    or tuple(self.model.input_shape[1:])
+                    != (self.model_sequence_length, len(V3_FEATURES))
+                    or int(self.model.output_shape[-1]) != len(self.le.classes_)
+                ):
+                    raise ValueError("V3 model/preprocessor/label shape mismatch")
+                if tuple(self.le.classes_) != ("BENIGN", "UDP_FLOOD"):
+                    raise ValueError("V3 label order mismatch")
+
             LOG.info(
                 "=================================================="
             )
@@ -3126,6 +3287,12 @@ class IntelligentController(app_manager.RyuApp):
             LOG.info(
                 "Model ID: %s",
                 self.active_model_id
+            )
+
+            LOG.info(
+                "Schema: %s | input=%s",
+                self.model_schema_version,
+                self.model.input_shape,
             )
 
             LOG.info(
@@ -3154,6 +3321,12 @@ class IntelligentController(app_manager.RyuApp):
             self.scaler = None
 
             self.le = None
+
+            self.model_schema_version = "legacy_cic_flow_v1"
+
+            self.model_sequence_length = 1
+
+            self.ml_sequences = {}
 
             LOG.error(
                 "❌ Model Load Error: %s",

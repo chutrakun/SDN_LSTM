@@ -1,0 +1,10 @@
+{
+  "sha256": {
+    "evaluation.json": "9e11c83e6d8029986ad412b7b34ed1a618dc60b6acc4e54e0e9246e352b87a29",
+    "label_encoder.pkl": "728c0e41c2a2432a78a5663f45c25030154419a6f02630ff51fce0bff55aa5b3",
+    "model.h5": "570c08df087f663c159fb3a7d8b5b3bd58ea24f9ca22d8d1a7e5e6a8608356ee",
+    "preprocessor.joblib": "380031c9a30ddeb7a3c1b24bb924af47033c70248480bbb5aef9b1925a03030a",
+    "training_metadata.json": "d267574d7bea7c695770831bb36383f764de86a5526aeed6f1e4607bf774bfc4"
+  },
+  "version": "sdn_lstm_v3_binary_v1"
+}

@@ -135,6 +135,17 @@ def init_db():
                 END $$;
             """)
 
+            cur.execute("""
+                ALTER TABLE attack_log
+                    ADD COLUMN IF NOT EXISTS block_reason TEXT,
+                    ADD COLUMN IF NOT EXISTS prediction_label TEXT,
+                    ADD COLUMN IF NOT EXISTS prediction_confidence REAL,
+                    ADD COLUMN IF NOT EXISTS ml_threshold REAL,
+                    ADD COLUMN IF NOT EXISTS hard_limit_threshold REAL,
+                    ADD COLUMN IF NOT EXISTS model_id INTEGER,
+                    ADD COLUMN IF NOT EXISTS model_schema TEXT;
+            """)
+
             # ─── Step 2.5: Migration — เติมข้อมูลลง network_ports และสร้าง FK Constraints ───
             cur.execute("""
                 DO $$
@@ -211,14 +222,30 @@ def ensure_port_exists(cur, port):
         ON CONFLICT (port) DO NOTHING
     """, (port,))
 
-def log_attack(port, pps, bps, conf, note="", attack_type="Unknown", dpid=None):
+def log_attack(
+    port, pps, bps, conf, note="", attack_type="Unknown", dpid=None,
+    block_reason=None, prediction_label=None, prediction_confidence=None,
+    ml_threshold=None, hard_limit_threshold=None, model_id=None,
+    model_schema=None,
+):
     with get_conn() as conn:
         with conn.cursor() as cur:
             ensure_port_exists(cur, port)
             cur.execute("""
-                INSERT INTO attack_log (port, pps, bps, conf, note, attack_type, dpid)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (port, round(pps,1), round(bps,1), round(conf*100,1), note, attack_type, dpid))
+                INSERT INTO attack_log (
+                    port, pps, bps, conf, note, attack_type, dpid,
+                    block_reason, prediction_label, prediction_confidence,
+                    ml_threshold, hard_limit_threshold, model_id, model_schema
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                port, round(pps, 1), round(bps, 1), round(conf * 100, 1),
+                note, attack_type, dpid, block_reason, prediction_label,
+                (None if prediction_confidence is None
+                 else round(prediction_confidence * 100, 1)),
+                (None if ml_threshold is None else round(ml_threshold * 100, 1)),
+                hard_limit_threshold, model_id, model_schema,
+            ))
 
 def block_port(port, conf, duration=60):
     now = time.time()
@@ -399,7 +426,10 @@ def get_attack_log(limit=50):
     with get_conn() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute("""
-                SELECT id, timestamp::text, port, pps, bps, conf, action, attack_type, note
+                SELECT id, timestamp::text, port, pps, bps, conf, action,
+                       attack_type, note, dpid, block_reason, prediction_label,
+                       prediction_confidence, ml_threshold, hard_limit_threshold,
+                       model_id, model_schema
                 FROM attack_log
                 ORDER BY id DESC
                 LIMIT %s
@@ -541,7 +571,10 @@ def get_attack_log_range(from_dt, to_dt, limit=500):
     with get_conn() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute("""
-                SELECT id, timestamp::text, port, pps, bps, conf, action, attack_type, note
+                SELECT id, timestamp::text, port, pps, bps, conf, action,
+                       attack_type, note, dpid, block_reason, prediction_label,
+                       prediction_confidence, ml_threshold, hard_limit_threshold,
+                       model_id, model_schema
                 FROM attack_log
                 WHERE timestamp BETWEEN %s AND %s
                 ORDER BY timestamp DESC LIMIT %s

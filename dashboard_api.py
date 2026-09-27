@@ -29,6 +29,9 @@ blocked_ips     = {}
 attack_log      = deque(maxlen=100)
 port_stats      = {}
 ml_stats        = {}
+ml_events       = deque(maxlen=100)
+ml_event_count  = 0
+attack_event_count = 0
 
 topology_manager = TopologyManager()
 
@@ -40,43 +43,96 @@ def api_traffic():
     ts = datetime.now().strftime('%H:%M:%S')
     traffic_history.append({'time': ts, 'port': port, 'pps': round(pps,1), 'bps': round(bps,1)})
     port_stats[str(port)] = {'pps': round(pps,1), 'bps': round(bps,1)}
-    # บันทึกลง DB ด้วย (fallback กรณี Ryu HAS_DB=False)
-    try:
-        import db_manager as db
-        db.log_traffic(port, pps, bps)
-    except Exception:
-        pass
+    # บันทึกเฉพาะ fallback เมื่อ Ryu ไม่มี DB writer ของตัวเอง
+    if not d.get('db_writer_active', False):
+        try:
+            import db_manager as db
+            db.log_traffic(port, pps, bps)
+        except Exception:
+            pass
     return jsonify({'ok': True})
 
 @app.route('/api/attack', methods=['POST'])
 def api_attack():
+    global attack_event_count
     d = request.json
     port, ip, conf = d['port'], d['ip'], d['conf']
     label = d.get('label', 'Unknown')
     ts = datetime.now().strftime('%H:%M:%S')
-    blocked_ips[ip] = {
-        'time': ts, 'port': port,
-        'conf': round(conf*100,1),
-        'label': label,
-        'expire': time.time()+90   # ตรงกับ BLOCK_DURATION=90 ของ controller
+    block_duration = int(d.get('block_duration', 90))
+    prediction_confidence = d.get('prediction_confidence')
+    prediction_confidence_pct = (
+        None if prediction_confidence is None
+        else round(float(prediction_confidence) * 100, 1)
+    )
+    ml_threshold = d.get('ml_threshold')
+    ml_threshold_pct = (
+        None if ml_threshold is None else round(float(ml_threshold) * 100, 1)
+    )
+    decision = {
+        'block_reason': d.get('block_reason', 'unknown'),
+        'prediction_label': d.get('prediction_label'),
+        'prediction_confidence': prediction_confidence_pct,
+        'ml_threshold': ml_threshold_pct,
+        'hard_limit_threshold': d.get('hard_limit_threshold_pps'),
+        'model_id': d.get('model_id'),
+        'model_schema': d.get('model_schema'),
     }
-    attack_log.appendleft({'time': ts, 'port': port, 'ip': ip, 'conf': round(conf*100,1), 'label': label})
+    blocked_ips[ip] = {
+        'time': ts, 'port': port, 'dpid': d.get('dpid'),
+        'conf': round(conf*100,1), 'label': label,
+        'expire': time.time()+block_duration, **decision
+    }
+    attack_event_count += 1
+    attack_log.appendleft({'sequence': attack_event_count, 'time': ts,
+                           'received_at': time.time(), 'port': port,
+                           'dpid': d.get('dpid'), 'ip': ip,
+                           'conf': round(conf*100,1), 'label': label,
+                           **decision})
     ml_stats[str(port)] = {'pred': 1, 'conf': round(conf*100,1)}
-    # บันทึกลง DB (fallback กรณี Ryu HAS_DB=False)
-    try:
-        import db_manager as db
-        pps_val = d.get('pps', 0)
-        bps_val = d.get('bps', 0)
-        db.log_attack(port, pps_val, bps_val, conf, note=label, attack_type=label)
-        db.block_port(port, conf, 90)
-    except Exception:
-        pass
+    # บันทึกเฉพาะ fallback เมื่อ Ryu เขียน DB ไม่สำเร็จ
+    if not d.get('db_persisted', False):
+        try:
+            import db_manager as db
+            pps_val = d.get('pps', 0)
+            bps_val = d.get('bps', 0)
+            db.log_attack(
+                port, pps_val, bps_val, conf, note=label, attack_type=label,
+                dpid=d.get('dpid'), block_reason=decision['block_reason'],
+                prediction_label=decision['prediction_label'],
+                prediction_confidence=prediction_confidence,
+                ml_threshold=ml_threshold,
+                hard_limit_threshold=decision['hard_limit_threshold'],
+                model_id=decision['model_id'],
+                model_schema=decision['model_schema'],
+            )
+            db.block_port(port, conf, block_duration)
+        except Exception:
+            pass
     return jsonify({'ok': True})
 
 @app.route('/api/ml', methods=['POST'])
 def api_ml():
+    global ml_event_count
     d = request.json
     ml_stats[str(d['port'])] = {'pred': d['pred'], 'conf': round(d['conf']*100,1)}
+    ml_event_count += 1
+    ml_events.append({
+        'sequence': ml_event_count, 'received_at': time.time(),
+        'time': datetime.now().strftime('%H:%M:%S'),
+        'dpid': d.get('dpid'), 'port': d['port'], 'ip': d.get('ip'),
+        'pred': d['pred'], 'conf': round(d['conf']*100, 1),
+        'pps': round(float(d.get('pps', 0)), 1),
+        'features': d.get('features', []),
+        'feature_schema': d.get('feature_schema'),
+        'feature_names': d.get('feature_names', []),
+        'feature_sequence': d.get('feature_sequence'),
+        'model_id': d.get('model_id'),
+        'ml_threshold': round(float(d.get('ml_threshold', 0)) * 100, 1),
+        'hard_limit_threshold': d.get('hard_limit_threshold_pps'),
+        'ml_block_eligible': bool(d.get('ml_block_eligible', False)),
+        'hard_limit_exceeded': bool(d.get('hard_limit_exceeded', False)),
+    })
     return jsonify({'ok': True})
 
 # ─── Dashboard polling endpoint ───
@@ -92,6 +148,9 @@ def api_state():
         'log':     list(attack_log)[:20],
         'ports':   port_stats,
         'ml':      ml_stats,
+        'ml_events': list(ml_events),
+        'ml_event_count': ml_event_count,
+        'attack_event_count': attack_event_count,
     })
 
 @app.route('/')
@@ -235,6 +294,7 @@ def api_topology_apply():
         result = topology_manager.apply(data['topology'])
         port_stats.clear()
         ml_stats.clear()
+        ml_events.clear()
         traffic_history.clear()
         try:
             import db_manager as db

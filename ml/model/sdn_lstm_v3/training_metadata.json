@@ -1,0 +1,80 @@
+{
+  "version": "sdn_lstm_v3_binary_v1",
+  "classes": [
+    "BENIGN",
+    "UDP_FLOOD"
+  ],
+  "ordered_features": [
+    "Window Duration us",
+    "RX Packets",
+    "TX Packets",
+    "RX Bytes",
+    "TX Bytes",
+    "Total Bytes/s",
+    "Total Packets/s",
+    "Mean Packet IAT us"
+  ],
+  "feature_spec": {
+    "Window Duration us": "interval_seconds * 1e6",
+    "RX Packets": "OVS rx_packets delta on the source-facing switch port",
+    "TX Packets": "OVS tx_packets delta on the source-facing switch port",
+    "RX Bytes": "OVS rx_bytes delta on the source-facing switch port",
+    "TX Bytes": "OVS tx_bytes delta on the source-facing switch port",
+    "Total Bytes/s": "rx_bytes_per_sec + tx_bytes_per_sec",
+    "Total Packets/s": "rx_pps + tx_pps",
+    "Mean Packet IAT us": "window duration us / max(RX Packets + TX Packets, 1)"
+  },
+  "input_shape": [
+    5,
+    8
+  ],
+  "sequence_length": 5,
+  "temperature": 1.0,
+  "production_ml_threshold": 0.9,
+  "split_experiment_ids": {
+    "train": [
+      "V3_star_h1_BENIGN_p00_R01",
+      "V3_star_h1_UDP_FLOOD_p00_R01",
+      "V3_star_h1_BENIGN_p01_R01",
+      "V3_star_h1_UDP_FLOOD_p01_R01",
+      "V3_star_h2_BENIGN_p02_R01",
+      "V3_star_h2_UDP_FLOOD_p02_R01",
+      "V3_star_h2_BENIGN_p03_R01",
+      "V3_star_h2_UDP_FLOOD_p03_R01",
+      "V3_tree_h1_BENIGN_p00_R01",
+      "V3_tree_h1_UDP_FLOOD_p00_R01",
+      "V3_tree_h1_BENIGN_p01_R01",
+      "V3_tree_h1_UDP_FLOOD_p01_R01",
+      "V3_tree_h2_BENIGN_p02_R01",
+      "V3_tree_h2_UDP_FLOOD_p02_R01",
+      "V3_tree_h2_BENIGN_p03_R01",
+      "V3_tree_h2_UDP_FLOOD_p03_R01",
+      "V3_full_mesh_h1_BENIGN_p00_R01",
+      "V3_full_mesh_h1_UDP_FLOOD_p00_R01",
+      "V3_full_mesh_h1_BENIGN_p01_R01",
+      "V3_full_mesh_h1_UDP_FLOOD_p01_R01",
+      "V3_full_mesh_h2_BENIGN_p02_R01",
+      "V3_full_mesh_h2_UDP_FLOOD_p02_R01",
+      "V3_full_mesh_h2_BENIGN_p03_R01",
+      "V3_full_mesh_h2_UDP_FLOOD_p03_R01"
+    ],
+    "validation": [
+      "V3_star_h3_BENIGN_p01_R01",
+      "V3_star_h3_UDP_FLOOD_p01_R01",
+      "V3_tree_h3_BENIGN_p01_R01",
+      "V3_tree_h3_UDP_FLOOD_p01_R01",
+      "V3_full_mesh_h3_BENIGN_p01_R01",
+      "V3_full_mesh_h3_UDP_FLOOD_p01_R01"
+    ],
+    "test": [
+      "V3_star_h4_BENIGN_p03_R01",
+      "V3_star_h4_UDP_FLOOD_p03_R02",
+      "V3_tree_h4_BENIGN_p03_R02",
+      "V3_tree_h4_UDP_FLOOD_p03_R02",
+      "V3_full_mesh_h4_BENIGN_p03_R02",
+      "V3_full_mesh_h4_UDP_FLOOD_p03_R02"
+    ]
+  },
+  "seed": 42,
+  "source_sha256": "50b4bd8f705c8ba74505a505c572f65f9525647e5579ce03f7f112b4701df4cb"
+}
